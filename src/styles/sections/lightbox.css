@@ -1,0 +1,13 @@
+/* ---------- lightbox ---------- */
+.lb{border:0;padding:0;background:transparent;max-width:min(92vw,1100px);max-height:92vh;color:var(--text-primary);overflow:visible}
+.lb::backdrop{background:rgba(2,12,16,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.lb[open]{animation:lbIn .45s var(--ease-out)}
+@keyframes lbIn{from{opacity:0;transform:scale(.96)}}
+.lb figure{margin:0}
+.lb img{max-width:min(92vw,1100px);max-height:78vh;width:auto;border-radius:14px;margin:0 auto}
+.lb figcaption{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-top:14px}
+.lb__nav{display:flex;gap:8px}
+.lb button{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;border:0;background:var(--panel-2);color:var(--text-primary);cursor:pointer;transition:background-color .2s,color .2s}
+.lb button:hover{background:var(--accent);color:#04191F}
+.lb button svg{width:20px;height:20px}
+.lb__close{position:absolute;right:-8px;top:-60px}

@@ -1,0 +1,8 @@
+/* ---------- marquee ---------- */
+.marquee{border-block:1px solid rgba(92,198,220,.14);overflow:hidden;padding:20px 0;background:rgba(8,42,51,.35)}
+.marquee__track{display:flex;width:max-content;animation:marq 48s linear infinite}
+.marquee__track span{display:inline-flex;align-items:center;gap:28px;padding-right:28px;font:700 clamp(18px,2vw,26px)/1 var(--f-display);color:var(--text-primary);white-space:nowrap}
+.marquee__track span:nth-child(even){color:transparent;-webkit-text-stroke:1px var(--cyan)}
+.marquee__track svg{width:14px;height:14px;flex:none}
+@keyframes marq{to{transform:translateX(-50%)}}
+.marquee:hover .marquee__track{animation-play-state:paused}

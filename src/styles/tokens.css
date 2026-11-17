@@ -1,0 +1,15 @@
+:root{
+  --canvas:#04191F; --panel:#082A33; --panel-2:#0B3440; --line:#15505E; --line-strong:#2C7182;
+  --accent:#FFC43B; --accent-hover:#FFD36B; --accent-muted:rgba(255,196,59,.16);
+  --cyan:#5CC6DC; --red:#F24236;
+  --text-primary:#EEF5F6; --text-body:#C9D6DA; --text-muted:#93ABB1;
+  --f-display:"Unbounded", "Manrope", system-ui, sans-serif;
+  --f-body:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, monospace;
+  --f-hand:"Caveat", "Comic Sans MS", cursive;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+  --r:20px; --r-sm:12px;
+  --wrap:1240px; --gut:clamp(20px,4vw,40px);
+  --tshadow:0 1px 2px rgba(2,12,16,.9),0 4px 18px rgba(2,12,16,.7);
+}

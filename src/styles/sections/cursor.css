@@ -1,0 +1,5 @@
+/* ---------- cursor ---------- */
+.cursor{position:fixed;left:0;top:0;z-index:300;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1.5px solid rgba(255,196,59,.7);pointer-events:none;opacity:0;transition:opacity .3s,width .35s var(--ease-out),height .35s var(--ease-out),margin .35s var(--ease-out),background-color .3s,border-color .3s}
+.cursor.on{opacity:1}
+.cursor.big{width:64px;height:64px;margin:-32px 0 0 -32px;background:rgba(255,196,59,.12);border-color:rgba(255,196,59,.9)}
+.cursor.hide{opacity:0}

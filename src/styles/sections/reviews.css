@@ -1,0 +1,13 @@
+/* ---------- reviews ---------- */
+.reviews{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.review{position:relative;display:flex;flex-direction:column;gap:18px;padding:28px 26px 22px;border-radius:var(--r);background:rgba(8,42,51,.6);box-shadow:inset 0 0 0 1px var(--line);transition:transform .5s var(--ease-out),box-shadow .4s}
+.review:hover{transform:translateY(-4px);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.review__q{width:30px;height:24px;fill:var(--accent)}
+.review blockquote{margin:0;color:var(--text-primary);font-size:18px;line-height:1.55}
+.review footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:16px;border-top:1px dashed rgba(92,198,220,.22)}
+.review footer b{display:block;color:var(--text-primary);font-size:15px}
+.review footer span{display:block;font-size:13px;color:var(--text-muted)}
+.orig{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;border:0;background:transparent;box-shadow:inset 0 0 0 1px var(--line-strong);color:var(--text-body);font-size:13px;font-weight:600;cursor:pointer;transition:box-shadow .25s,color .25s}
+.orig:hover{box-shadow:inset 0 0 0 1px var(--cyan);color:var(--text-primary)}
+.orig svg{width:14px;height:14px}
+.rev-note{margin-top:22px;font-size:14px;color:var(--text-muted)}

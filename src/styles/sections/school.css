@@ -1,0 +1,24 @@
+/* ---------- school is ---------- */
+.school{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(40px,6vw,90px);align-items:start}
+.school__lead h2{margin:18px 0 26px}
+.school__lead .lede{max-width:38ch}
+.school__lead .hand{display:block;margin-top:28px;color:var(--accent);font-size:28px;transform:rotate(-2deg);transform-origin:left}
+.benefits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.benefit{position:relative;padding:28px 26px 30px;border-radius:var(--r);background:rgba(8,42,51,.55);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden;transition:transform .5s var(--ease-out),box-shadow .4s}
+.benefit:nth-child(2),.benefit:nth-child(4){transform:translateY(34px)}
+.js .benefit.rv{transform:translateY(60px)}
+.js .benefit.rv.in:nth-child(odd){transform:none}
+.js .benefit.rv.in:nth-child(even){transform:translateY(34px)}
+.benefit:hover{box-shadow:inset 0 0 0 1px var(--line-strong)}
+.ico{width:52px;height:52px;margin-bottom:22px;display:block}
+.ico path,.ico rect,.ico circle,.ico line,.ico polyline{fill:none;stroke:var(--cyan);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ico .acc{stroke:var(--accent)}
+.js .ico [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s var(--ease-out) .25s}
+.js .in .ico [pathLength]{stroke-dashoffset:0}
+.benefit h3{margin-bottom:10px}
+.benefit p{font-size:16px;color:var(--text-body)}
+
+/* divider line */
+.divider{display:block;width:100%;height:80px;overflow:visible}
+.divider path{fill:none;stroke:rgba(92,198,220,.35);stroke-width:1.2}
+.divider circle{fill:var(--accent)}

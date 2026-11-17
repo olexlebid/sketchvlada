@@ -1,0 +1,48 @@
+/* ---------- journey (scroll scrub) ---------- */
+.journey{height:440vh}
+.journey__stage{position:sticky;top:0;height:100vh;height:100svh;display:flex;align-items:center;overflow:hidden}
+.journey__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,5vw,80px);align-items:center;width:100%}
+.journey__copy{position:relative;min-height:min(560px,70vh);display:flex;flex-direction:column}
+.journey__copy h2{margin:18px 0 0;max-width:13ch}
+.bands{position:relative;flex:1;margin-top:34px}
+.band{position:absolute;inset:0 0 auto;opacity:0;will-change:opacity}
+.band__n{display:flex;align-items:center;gap:14px;margin-bottom:14px;color:var(--accent)}
+.band__n b{font:700 64px/1 var(--f-display);letter-spacing:-.04em}
+.band__n span{font:500 12px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-primary)}
+.band p{font-size:clamp(18px,1.6vw,22px);line-height:1.55;color:var(--text-primary);max-width:30ch}
+.band .w{display:inline-block;opacity:var(--kc,1);transform:translateY(calc((1 - var(--kc,1))*16px))}
+.band .w{--kc:clamp(0,(var(--k,1) - var(--th,0))*3,1)}
+.band__credit{display:flex;align-items:center;gap:12px;margin-top:22px;color:var(--text-muted);font-size:15px;opacity:var(--ks,1)}
+.band__credit{--ks:clamp(0,(var(--k,1) - .55)*4,1)}
+.band .btn{margin-top:26px;opacity:var(--kb,1);transform:translateY(calc((1 - var(--kb,1))*12px))}
+.band .btn{--kb:clamp(0,(var(--k,1) - .7)*4,1)}
+.rail{position:absolute;left:-34px;top:0;bottom:0;width:2px;background:rgba(92,198,220,.16);border-radius:2px}
+.rail i{position:absolute;inset:0;background:var(--accent);transform-origin:top;transform:scaleY(var(--p,0));border-radius:2px}
+.jframe{position:relative;justify-self:center;width:min(100%,calc(78vh*635/768));aspect-ratio:635/768;border-radius:var(--r);overflow:hidden;background:#02090B;box-shadow:0 0 0 1px rgba(92,198,220,.2),0 40px 90px -40px rgba(0,0,0,.8)}
+.jl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.jl--line{filter:url(#lineart);clip-path:circle(var(--r0,0%) at 50% 42%)}
+.jl--tone{filter:grayscale(1) contrast(1.08) brightness(.92);clip-path:inset(0 calc(100% - var(--x1,0%)) 0 0)}
+.jl--color{clip-path:inset(0 calc(100% - var(--x2,0%)) 0 0)}
+.stylus{position:absolute;top:0;bottom:0;left:0;width:2px;background:var(--accent);box-shadow:0 0 18px 3px rgba(255,196,59,.55);opacity:0;transform:translateX(var(--sx,0px));will-change:transform,opacity}
+.stylus::after{content:"";position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px rgba(255,196,59,.25)}
+.jframe__hud{position:absolute;left:14px;right:14px;top:14px;display:flex;justify-content:space-between;pointer-events:none}
+.jframe__hud span{background:rgba(4,25,31,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:999px;padding:7px 12px;color:var(--text-primary)}
+.jstatic{display:none}
+html.static-journey .journey{height:auto}
+html.static-journey .journey__stage{position:relative;height:auto;padding-block:clamp(80px,10vw,130px)}
+html.static-journey .bands,html.static-journey .rail,html.static-journey .jframe{display:none}
+html.static-journey .jstatic{display:block}
+html.static-journey .journey__grid{grid-template-columns:1fr}
+html.static-journey .journey__copy{min-height:0}
+html.static-journey .journey__copy h2{max-width:18ch}
+.jstatic{margin-top:30px}
+.jstatic__steps{list-style:none;margin:0 0 30px;padding:0;display:grid;gap:22px;counter-reset:s}
+.jstatic__steps li{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:start}
+.jstatic__steps b{font:700 34px/1 var(--f-display);color:var(--accent)}
+.jstatic__steps strong{display:block;color:var(--text-primary);font-size:17px;margin-bottom:4px}
+.jstatic__frames{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.jstatic__frames figure{margin:0;border-radius:12px;overflow:hidden;background:#02090B;position:relative}
+.jstatic__frames img{width:100%;aspect-ratio:635/768;object-fit:cover}
+.jstatic__frames figcaption{position:absolute;left:8px;bottom:8px;font:500 10.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#fff;text-shadow:var(--tshadow)}
+.jstatic__frames .f-line img{filter:url(#lineart)}
+.jstatic__frames .f-tone img{filter:grayscale(1) contrast(1.08) brightness(.92)}
