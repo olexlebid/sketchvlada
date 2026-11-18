@@ -1,0 +1,513 @@
+<title>Палітри Sketch Vlada</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=JetBrains+Mono:wght@500&family=Manrope:wght@400;600;700&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: a contact-sheet of palettes. Overview strip on top, then one full-width "board" per palette:
+   live site mockup in that palette + swatch rail + why/caveats. Page chrome stays neutral so palettes speak. */
+:root{
+  --bg:#F2F2EF; --card:#FFFFFF; --ink:#16181C; --muted:#5E6268; --rule:#DADBD6; --focus:#2B5BFF;
+  --f-display:"Unbounded","Manrope",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --f-hand:"Caveat","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121316;--card:#1B1D21;--ink:#ECECE8;--muted:#9A9DA3;--rule:#2C2F35;--focus:#8FB0FF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121316;--card:#1B1D21;--ink:#ECECE8;--muted:#9A9DA3;--rule:#2C2F35;--focus:#8FB0FF;color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+.page{max-width:1240px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:48px 80px;display:grid;gap:64px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.eyebrow{font:500 12px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:6px}
+
+/* ---------- intro ---------- */
+.intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:32px 56px;align-items:end}
+.intro h1{font:700 clamp(30px,4.4vw,52px)/1.06 var(--f-display);letter-spacing:-.02em;margin-top:14px}
+.intro .lede{color:var(--muted);max-width:52ch;font-size:17px}
+.brief{display:grid;gap:10px;padding:20px 22px;border-radius:16px;background:var(--card);border:1px solid var(--rule)}
+.brief dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14.5px}
+.brief dt{color:var(--muted)}
+.brief dd{margin:0;font-weight:600}
+
+/* ---------- overview strip ---------- */
+.strip{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:12px}
+.strip a{display:grid;gap:10px;text-decoration:none;color:inherit;padding:10px;border-radius:14px;border:1px solid var(--rule);background:var(--card);transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s}
+.strip a:hover{transform:translateY(-3px);border-color:var(--muted)}
+.strip .bars{display:flex;height:84px;border-radius:9px;overflow:hidden}
+.strip .bars i{display:block}
+.strip b{font-weight:700;font-size:14px;line-height:1.25}
+.strip span{font:500 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.strip .cur{opacity:.8}
+
+/* ---------- board ---------- */
+.board{display:grid;gap:22px;scroll-margin-top:24px}
+.board__head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:end;border-top:1px solid var(--rule);padding-top:22px}
+.board__head h2{font:700 clamp(24px,2.8vw,34px)/1.1 var(--f-display);letter-spacing:-.015em}
+.board__head .mood{grid-column:1/-1;color:var(--muted);max-width:68ch}
+.pick{font:600 13px/1 var(--f-body);padding:8px 12px;border-radius:999px;border:1px solid var(--ink);white-space:nowrap}
+
+.board__body{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;align-items:start}
+
+/* swatches */
+.swatches{display:grid;gap:8px}
+.sw{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:14px;align-items:center;padding:8px 10px 8px 8px;border-radius:12px;background:var(--card);border:1px solid var(--rule);cursor:pointer;font:inherit;color:inherit;text-align:left;width:100%}
+.sw:hover{border-color:var(--muted)}
+.sw i{width:52px;height:40px;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(127,127,127,.25)}
+.sw b{display:block;font-size:14.5px}
+.sw small{display:block;color:var(--muted);font-size:13px;line-height:1.35}
+.sw code{font:500 12.5px/1 var(--f-mono);letter-spacing:.04em}
+.sw.copied code::after{content:" ✓"}
+
+.notes{display:grid;gap:14px;margin-top:6px}
+.notes h3{font:700 13px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.notes ul{margin:8px 0 0;padding-left:18px;display:grid;gap:6px;font-size:15px}
+.contrast{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.contrast span{font:500 12px/1 var(--f-mono);padding:6px 8px;border-radius:6px;background:var(--card);border:1px solid var(--rule)}
+.contrast span.ok::before{content:"AA ";color:#1F9D55}
+.contrast span.big::before{content:"AA large ";color:#B7791F}
+
+/* ---------- mockup (each one sets its own colors from palette vars) ---------- */
+.mock{--r:18px;position:relative;overflow:hidden;border-radius:var(--r);background:var(--m-bg);color:var(--m-body);box-shadow:0 1px 0 var(--rule),0 24px 60px -36px rgba(0,0,0,.45);isolation:isolate}
+.mock svg.persp{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.m-nav{display:flex;align-items:center;gap:18px;padding:16px 22px}
+.m-logo{font:700 17px/1 var(--f-display);color:var(--m-text);letter-spacing:-.01em}
+.m-logo em{font-style:normal;color:var(--m-logo2)}
+.m-links{display:flex;gap:16px;margin-left:auto;font-weight:600;font-size:13px}
+.m-links span:first-child{color:var(--m-text);box-shadow:0 2px 0 var(--m-accent)}
+.m-btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 18px;border-radius:999px;background:var(--m-accent);color:var(--m-on);font:700 13.5px/1 var(--f-body);white-space:nowrap}
+.m-btn--lg{min-height:48px;padding:0 24px;font-size:15px}
+.m-ghost{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--m-line);color:var(--m-text);font:700 15px/1 var(--f-body)}
+.m-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:24px;padding:26px 22px 28px;align-items:center}
+.m-kicker{display:inline-flex;align-items:center;gap:10px;font:500 11px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--m-second)}
+.m-kicker::before{content:"";width:22px;height:1px;background:currentColor}
+.m-h1{margin:14px 0 14px;display:grid;gap:2px}
+.m-h1 small{font:500 clamp(15px,1.5vw,19px)/1.2 var(--f-body);color:var(--m-body)}
+.m-h1 b{font:700 clamp(22px,2.9vw,38px)/1.05 var(--f-display);letter-spacing:-.025em;color:var(--m-text)}
+.m-h1 em{font-style:normal;color:var(--m-hl)}
+.m-lede{font-size:14.5px;line-height:1.6;max-width:36ch;margin-bottom:18px}
+.m-cta{display:flex;flex-wrap:wrap;gap:10px}
+.m-visual{position:relative;display:grid;gap:12px}
+.m-sketch{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:var(--m-surface);box-shadow:inset 0 0 0 1px var(--m-line)}
+.m-sketch svg{position:absolute;inset:0;width:100%;height:100%}
+.m-note{position:absolute;right:10px;bottom:6px;font:600 20px/1 var(--f-hand);color:var(--m-hl);transform:rotate(-4deg)}
+.m-card{display:grid;gap:10px;padding:14px 16px;border-radius:14px;background:var(--m-surface);box-shadow:inset 0 0 0 1px var(--m-line)}
+.m-card .t{font-weight:700;font-size:14px;color:var(--m-text);line-height:1.3}
+.m-card .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-top:10px;border-top:1px dashed var(--m-line)}
+.m-tags{display:flex;gap:6px;flex-wrap:wrap}
+.m-tag{font:500 10px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:var(--m-bg);color:var(--m-text);box-shadow:inset 0 0 0 1px var(--m-line)}
+.m-tag--en{background:var(--m-second);color:var(--m-on2);box-shadow:none}
+.m-price{font:700 18px/1 var(--f-display);color:var(--m-price)}
+.m-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.m-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:#3FBF6B}
+.m-chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 22px 22px}
+.m-chip{font-weight:600;font-size:12.5px;padding:8px 14px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--m-line);color:var(--m-body);background:var(--m-surface)}
+.m-chip.on{background:var(--m-text);color:var(--m-bg);box-shadow:none}
+
+/* ---------- gradient + 3D variants ---------- */
+.group{display:grid;gap:12px;padding:28px;border-radius:20px;background:var(--card);border:1px solid var(--rule)}
+.group h2{font:700 clamp(26px,3.4vw,40px)/1.08 var(--f-display);letter-spacing:-.02em}
+.group p:not(.eyebrow){color:var(--muted);max-width:70ch}
+.m-aura{position:absolute;inset:0;z-index:-1;overflow:hidden;background:var(--m-bg)}
+.m-aura::before{content:"";position:absolute;inset:-25%;
+  background:
+    radial-gradient(36% 40% at 76% 28%,color-mix(in srgb,var(--m-g1) 75%,transparent),transparent 70%),
+    radial-gradient(32% 38% at 94% 80%,color-mix(in srgb,var(--m-g2) 65%,transparent),transparent 70%),
+    radial-gradient(42% 36% at 14% 104%,color-mix(in srgb,var(--m-g3) 50%,transparent),transparent 70%);
+  filter:blur(28px);animation:aura 16s ease-in-out infinite alternate}
+.is-light .m-aura::before{opacity:.75}
+.m-aura::after{content:"";position:absolute;inset:0;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@keyframes aura{to{transform:translate3d(-7%,5%,0) rotate(9deg) scale(1.06)}}
+.m-3d{position:relative;aspect-ratio:1/1;max-width:100%}
+.m-3d canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.is-3d .m-card{background:color-mix(in srgb,var(--m-surface) 50%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--m-text) 16%,transparent)}
+.is-3d .m-visual{margin-block:-20px -8px}
+.is-3d .m-note{right:auto;left:6px;bottom:auto;top:10px}
+.m-h1 em.grad{background:linear-gradient(90deg,var(--m-t1),var(--m-t2),var(--m-t3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sw code br{display:block}
+.sw .g{white-space:normal;text-align:right;line-height:1.5}
+
+.foot{border-top:1px solid var(--rule);padding-top:22px;color:var(--muted);font-size:14.5px;display:grid;gap:8px;max-width:72ch}
+.foot b{color:var(--ink)}
+
+@media (max-width:980px){
+  .board__body{grid-template-columns:1fr}
+  .strip{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (min-width:981px) and (max-width:1200px){.strip{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media (max-width:720px){
+  .intro{grid-template-columns:1fr}
+  .m-hero{grid-template-columns:1fr}
+  .m-links{display:none}
+  .m-nav .m-btn{margin-left:auto}
+  .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .board__head{grid-template-columns:1fr}
+  .pick{justify-self:start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main class="page">
+  <header class="intro">
+    <div>
+      <p class="eyebrow">Sketch Vlada School · нова кольорова гамма</p>
+      <h1>Вісім напрямків для оновлення сайту</h1>
+    </div>
+    <div style="display:grid;gap:16px">
+      <p class="lede">Кожна палітра показана на живому макеті першого екрана сайту, з тими самими шрифтами. Натисніть на колір, щоб скопіювати HEX. Контраст тексту перевіряється автоматично за WCAG.</p>
+      <div class="brief">
+        <dl>
+          <dt>Аудиторія</dt><dd>жінки 25–45, новачки й дизайнерки інтер'єру</dd>
+          <dt>Що продаємо</dt><dd>навичку, з якою заробляють</dd>
+          <dt>Що лишаємо</dt><dd>шрифти, перспективні лінії, рукописні підписи</dd>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <nav class="strip" id="strip" aria-label="Палітри"></nav>
+
+  <div id="boards" style="display:grid;gap:72px"></div>
+
+  <footer class="foot">
+    <p><b>Як обрати.</b> Перші дві палітри найменше змінюють впізнаваність: жовтий логотип працює без переробки. Третя і четверта зміщують бренд у бік інтер'єрного дизайну й потребують темної версії логотипа. П'ята найсміливіша, її варто брати, якщо школа хоче звучати молодше. Шоста, сьома і восьма додають градієнти та 3D: вони виглядають найдорожче, але потребують більше роботи і запасного варіанта для слабких телефонів.</p>
+    <p>Скажіть номер або назву, і я перенесу палітру в <code>tokens.css</code> сайту.</p>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Palette data. Roles map 1:1 onto tokens the site already uses (canvas, panel, line, text, accent...).
+const P = [
+  {
+    id:'current', n:'0', name:'Зараз: нічний бірюзовий', short:'Поточна', current:true,
+    mood:'Те, що на сайті зараз, для порівняння. Глибокий бірюзовий фон, жовтий акцент, блакитні лінії.',
+    c:{bg:'#04191F',surface:'#082A33',line:'#15505E',text:'#EEF5F6',body:'#C9D6DA',accent:'#FFC43B',on:'#04191F',second:'#5CC6DC',on2:'#04191F',hl:'#FFC43B',price:'#FFC43B',logo2:'#FFC43B',persp:'#5CC6DC'},
+    names:{bg:'Canvas',surface:'Panel',line:'Line',text:'Text',accent:'Accent',second:'Cyan'},
+    why:[], care:[]
+  },
+  {
+    id:'graphite', n:'1', name:'Графіт і жовтий маркер', short:'Графіт', pick:'Найбезпечніша',
+    mood:'Еволюція поточного стилю. Бірюза йде, лишається нейтральний графіт, як матовий екран iPad, і жовтий, як маркер. Роботи студентів на такому фоні виглядають яскравіше.',
+    c:{bg:'#15171B',surface:'#1F2227',line:'#353A43',text:'#F4F2EC',body:'#C2C4C8',accent:'#FFCF3F',on:'#15171B',second:'#9CC8FF',on2:'#15171B',hl:'#FFCF3F',price:'#FFCF3F',logo2:'#FFCF3F',persp:'#9CC8FF'},
+    names:{bg:'Графіт',surface:'Панель',line:'Лінія',text:'Текст',accent:'Маркер',second:'Небо'},
+    why:['Логотип і всі жовті елементи працюють без змін','Нейтральний фон не сперечається з кольорами скетчів','Темна тема виглядає преміально, як професійний софт'],
+    care:['Найменша зміна: хтось може не помітити ребрендинг']
+  },
+  {
+    id:'paper', n:'2', name:'Альбом і синій олівець', short:'Альбом', pick:'Найближча до скетчингу',
+    mood:'Світлий сайт як сторінка скетчбука: теплувато-сірий папір, графітовий текст, кобальтові будівельні лінії перспективи і жовтий акцент, як виділення текстовиділювачем.',
+    c:{bg:'#F3F2EE',surface:'#FFFFFF',line:'#D9D8D1',text:'#1D2029',body:'#4A4E58',accent:'#2F4BE8',on:'#FFFFFF',second:'#2F4BE8',on2:'#FFFFFF',hl:'#2F4BE8',price:'#1D2029',logo2:'#E2A900',persp:'#2F4BE8'},
+    names:{bg:'Папір',surface:'Аркуш',line:'Лінія',text:'Графіт',accent:'Кобальт',second:'Олівець'},
+    why:['Світлий фон легше читати новачкам, сайт виглядає дружнім','Сині перспективні лінії, як у креслярському скетчингу','Добре друкується і переноситься в соцмережі'],
+    care:['Потрібна темна версія логотипа (жовтий на білому слабкий)','Жовтий лишається тільки для дрібних акцентів']
+  },
+  {
+    id:'mocha', n:'3', name:'Мока і шавлія', short:'Мока', pick:'Для дизайнерок інтер’єру',
+    mood:'Мова сучасного інтер’єру: світла штукатурка, мока (колір Pantone 2025), еспресо замість чорного і приглушена шавлія. Те, що дизайнерки бачать у мудбордах щодня.',
+    c:{bg:'#EEE8E1',surface:'#F8F4EF',line:'#D8CEC3',text:'#2B211C',body:'#5A4C44',accent:'#2B211C',on:'#F8F4EF',second:'#7E9478',on2:'#FFFFFF',hl:'#A0705A',price:'#A0705A',logo2:'#A0705A',persp:'#A47864'},
+    names:{bg:'Штукатурка',surface:'Льон',line:'Шов',text:'Еспресо',accent:'Кнопка',second:'Шавлія',hl:'Мока'},
+    show:['bg','surface','line','text','hl','second'],
+    why:['Говорить мовою аудиторії: так виглядають сучасні інтер’єри','Тепла, спокійна, «доросла» гамма підвищує сприйняту ціну курсів','Фото Влади і теплі рендери студентів лягають природно'],
+    care:['Потрібна темна версія логотипа','Мока недостатньо контрастна для дрібного тексту, тому кнопки кольору еспресо']
+  },
+  {
+    id:'blueprint', n:'4', name:'Креслення і персик', short:'Креслення', pick:'Архітектурне коріння',
+    mood:'Глибокий чорнильно-синій, як калька креслення, світлі лінії перспективи і теплий персиковий акцент. Нагадує, що Влада архітекторка, але без холоду.',
+    c:{bg:'#0F1A33',surface:'#16244A',line:'#2C3E6E',text:'#F5F0EA',body:'#C3C8D6',accent:'#FFAE85',on:'#0F1A33',second:'#7FA2FF',on2:'#0F1A33',hl:'#FFAE85',price:'#FFAE85',logo2:'#FFAE85',persp:'#7FA2FF'},
+    names:{bg:'Чорнило',surface:'Калька',line:'Лінія',text:'Папір',accent:'Персик',second:'Креслення'},
+    why:['Пов’язує школу з архітектурою й точністю','Персик теплий і жіночний, але не «рожевий»','Темна тема зберігає настрій поточного сайту'],
+    care:['Жовтий логотип варто перефарбувати в персик або білий']
+  },
+  {
+    id:'lilac', n:'5', name:'Бузок і лайм', short:'Бузок', pick:'Найсміливіша',
+    mood:'Мова креаторів і Procreate-спільноти: світлий бузковий фон, глибокий фіолетовий текст, фіолетові кнопки і лаймові виділення. Молодо, енергійно, помітно в стрічці.',
+    c:{bg:'#EEEAFB',surface:'#FFFFFF',line:'#D6CFF2',text:'#1C1433',body:'#4B4364',accent:'#5B3FF0',on:'#FFFFFF',second:'#D2F05A',on2:'#1C1433',hl:'#5B3FF0',price:'#1C1433',logo2:'#5B3FF0',persp:'#5B3FF0'},
+    names:{bg:'Бузок',surface:'Аркуш',line:'Лінія',text:'Слива',accent:'Фіолет',second:'Лайм'},
+    why:['Найсучасніше звучання, схоже на улюблені креативні застосунки','Лайм дає емоцію «вийшло!» для марафонів і акцій','Виділяється серед інших шкіл малювання'],
+    care:['Може здатися надто «молодіжною» для дорогих PRO-курсів','Логотип повністю перефарбовується']
+  },
+  {
+    id:'aurora', n:'6', name:'Аврора і скляна кімната', short:'Аврора', pick:'Підпис Влади в 3D', scene:'room', note:'від лінії до кольору',
+    mood:'Нічне небо з м’якими переливами фіолетового, рожевого і персикового. У першому екрані живе 3D-кімната: спершу тонкі лінії, потім вона заливається кольором. Це та сама перспектива з сайту, тільки об’ємна. Поверніть її курсором.',
+    grad:['#5B4BFF','#FF6FB5','#FFB27A'], tgrad:['#9C8CFF','#FF8FC8','#FFC59A'],
+    c:{bg:'#0A0A1F',surface:'#17173A',line:'#2E2E5E',text:'#F6F2FF',body:'#C9C4E6',accent:'#FFB27A',on:'#0A0A1F',second:'#8F7CFF',on2:'#0A0A1F',hl:'#FF8FC8',price:'#FFB27A',logo2:'#FFB27A',persp:'#8F7CFF'},
+    names:{bg:'Ніч',surface:'Скло',text:'Світло',accent:'Персик',second:'Фіалка',grad:'Аврора'},
+    show:['bg','surface','text','accent','second','grad'],
+    why:['3D-кімната показує суть школи: з ліній народжується інтер’єр','Переливи й скляні картки зараз асоціюються з дорогими продуктами','Темна основа зберігає нічний характер поточного сайту'],
+    care:['Three.js додає ~150 КБ і потребує версії без 3D для слабких телефонів','Логотип краще зробити білим або персиковим']
+  },
+  {
+    id:'pearl', n:'7', name:'Перламутрова крапля', short:'Перламутр', pick:'Бʼюті-преміум', scene:'blob', note:'крапля фарби', light:true,
+    mood:'Світлий перламутровий фон і жива 3D-крапля фарби, що переливається рожевим, бузковим і м’ятним. Як у косметичних брендів: ніжно, жіночно і дорого. Текст глибокий сливовий.',
+    grad:['#FF8AC8','#B69CFF','#7FE0C8'], tgrad:['#D6409F','#7B5CF0','#1E9C7E'],
+    c:{bg:'#F5F2FA',surface:'#FFFFFF',line:'#E2DCEF',text:'#241B35',body:'#5B5170',accent:'#241B35',on:'#FFFFFF',second:'#7FE0C8',on2:'#241B35',hl:'#7B5CF0',price:'#241B35',logo2:'#D6409F',persp:'#B69CFF'},
+    names:{bg:'Перли',surface:'Аркуш',text:'Слива',accent:'Кнопка',second:'М’ята',grad:'Перламутр'},
+    show:['bg','surface','text','accent','second','grad'],
+    why:['Найжіночніша з усіх, але без банальної рожевості','Крапля фарби пов’язана з малюванням, а не просто декор','Світлий фон робить сайт легким і дружнім для новачків'],
+    care:['Яскраві роботи студентів на перламутрі треба подавати в рамках','Потрібна темна версія логотипа']
+  },
+  {
+    id:'golden', n:'8', name:'Золота година', short:'Золото', pick:'Продукт у кадрі', scene:'ipad', note:'ваш перший скетч',
+    mood:'Теплий захід сонця на темному еспресо: від коралового до медового. У кадрі 3D-iPad зі стилусом, на екрані скетч сам заливається кольором. Головний інструмент курсу стає героєм першого екрана.',
+    grad:['#FF5A3C','#FF9A55','#FFD27A'], tgrad:['#FF7A55','#FFA866','#FFD98A'],
+    c:{bg:'#140E0B',surface:'#221813',line:'#3A2A21',text:'#FFF4E8',body:'#D9C6B6',accent:'#FF8A4C',on:'#140E0B',second:'#FFD27A',on2:'#140E0B',hl:'#FFA866',price:'#FFD27A',logo2:'#FFD27A',persp:'#FF9A55'},
+    names:{bg:'Еспресо',surface:'Шкіра',text:'Вершки',accent:'Корал',second:'Мед',grad:'Захід'},
+    show:['bg','surface','text','accent','second','grad'],
+    why:['iPad і стилус одразу пояснюють, чого тут навчають','Тепле світло, як на рендерах інтер’єрів, і пасує до фото Влади','Жовтий логотип природно вписується в медовий акцент'],
+    care:['3D-модель iPad варто замовити або купити якіснішу, ніж у макеті','Three.js потребує запасного статичного варіанта для мобільних']
+  }
+];
+
+// ---- WCAG contrast ----
+const lum = hex => { const v=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4)); return .2126*v[0]+.7152*v[1]+.0722*v[2]; };
+const ratio = (a,b) => { const [x,y]=[lum(a),lum(b)].sort((p,q)=>q-p); return (x+.05)/(y+.05); };
+
+// ---- perspective room lines (the site's signature), drawn per palette ----
+function room(w,h,vx,vy,col,dense){
+  const out=[]; const n=dense?18:12;
+  for(let i=0;i<=n;i++){ const px=-w*.4+w*1.8*i/n; out.push(`<line x1="${px.toFixed(1)}" y1="${h}" x2="${vx}" y2="${vy}"/>`); if(i%2===0) out.push(`<line x1="${px.toFixed(1)}" y1="0" x2="${vx}" y2="${vy}"/>`); }
+  const bw=w*.22,bh=h*.3; const bx=vx-bw/2, by=vy-bh*.45;
+  return `<g stroke="${col}" stroke-width="1" opacity=".22" fill="none">${out.join('')}</g>
+  <rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="none" stroke="${col}" stroke-opacity=".5"/>
+  <g stroke="${col}" stroke-opacity=".55" fill="none"><line x1="0" y1="0" x2="${bx}" y2="${by}"/><line x1="${w}" y1="0" x2="${bx+bw}" y2="${by}"/><line x1="${w}" y1="${h}" x2="${bx+bw}" y2="${by+bh}"/><line x1="0" y1="${h}" x2="${bx}" y2="${by+bh}"/></g>`;
+}
+// a tiny "sketch" of a living room in line art, built from simple shapes
+function sketch(c){
+  const W=400,H=300,vx=210,vy=118;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  ${room(W,H,vx,vy,c.persp,false)}
+  <g fill="none" stroke="${c.text}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+    <path d="M118 212 L118 182 Q118 172 128 172 L262 172 Q272 172 272 182 L272 212"/>
+    <path d="M104 214 L286 214 L286 236 L104 236 Z"/>
+    <path d="M140 172 L140 160 Q140 152 148 152 L188 152 Q196 152 196 160 L196 172 M200 172 L200 160 Q200 152 208 152 L244 152 Q252 152 252 160 L252 172"/>
+    <path d="M112 236 L112 246 M278 236 L278 246"/>
+    <path d="M298 92 L298 226 M286 226 L310 226"/><path d="M286 92 L310 92 L304 76 L292 76 Z"/>
+    <path d="M60 60 L60 150 L96 140 L96 70 Z"/>
+  </g>
+  <g fill="${c.hl}" opacity=".85"><circle cx="160" cy="164" r="5"/></g>
+  <path d="M140 258 C190 250 250 252 300 262" fill="none" stroke="${c.hl}" stroke-width="2.4" stroke-linecap="round"/>
+  <g stroke="${c.hl}" stroke-width="1.4" fill="none"><circle cx="${vx}" cy="${vy}" r="5"/><path d="M${vx-11} ${vy}H${vx+11}M${vx} ${vy-11}V${vy+11}"/></g>
+</svg>`;
+}
+
+function mock(p){
+  const c=p.c, is3d=!!p.scene;
+  const v={bg:c.bg,surface:c.surface,line:c.line,text:c.text,body:c.body,accent:c.accent,on:c.on,second:c.second,on2:c.on2,hl:c.hl,price:c.price,'logo2':c.logo2};
+  if(p.grad){[v.g1,v.g2,v.g3]=p.grad;[v.t1,v.t2,v.t3]=p.tgrad;}
+  const vars=Object.entries(v).map(([k,x])=>`--m-${k}:${x}`).join(';');
+  const bg = is3d ? `<div class="m-aura" aria-hidden="true"></div>` : `<svg class="persp" viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${room(800,520,300,150,c.persp,true)}</svg>`;
+  const visual = is3d ? `<div class="m-3d"><canvas data-scene="${p.scene}" aria-hidden="true"></canvas><span class="m-note">${p.note}</span></div>` : `<div class="m-sketch">${sketch(c)}<span class="m-note">точка сходу</span></div>`;
+  return `<div class="mock${is3d?' is-3d':''}${p.light?' is-light':''}" style="${vars}" role="img" aria-label="Макет першого екрана сайту в палітрі «${p.name}»">
+    ${bg}
+    <div class="m-nav"><span class="m-logo">Sketch <em>Vlada</em></span>
+      <span class="m-links"><span>Курси</span><span>Як навчаємо</span><span>Роботи</span><span>Відгуки</span></span>
+      <span class="m-btn">Обрати курс</span></div>
+    <div class="m-hero">
+      <div>
+        <span class="m-kicker">Владислава Бондаренко</span>
+        <div class="m-h1"><small>Онлайн-школа</small><b>скетчингу</b><b>і <em${p.grad?' class="grad"':''}>моделювання</em></b><b>інтер'єрів</b></div>
+        <p class="m-lede">Навчу малювати інтер'єри на iPad, навіть якщо ви ніколи не малювали.</p>
+        <div class="m-cta"><span class="m-btn m-btn--lg">Обрати курс →</span><span class="m-ghost">Відео про школу</span></div>
+      </div>
+      <div class="m-visual">
+        ${visual}
+        <div class="m-card"><div class="m-tags"><span class="m-tag">iPad</span><span class="m-tag m-tag--en">EN</span></div>
+          <span class="t">Інтер'єрний скетчинг. Від новачка до профі</span>
+          <div class="row"><span class="m-badge">Набір відкрито</span><span class="m-price">$449</span></div></div>
+      </div>
+    </div>
+    <div class="m-chips"><span class="m-chip on">Усі курси</span><span class="m-chip">Хочу спробувати</span><span class="m-chip">Хочу заробляти</span><span class="m-chip">Моделювання</span></div>
+  </div>`;
+}
+
+const roleText = {bg:'фон сторінки',surface:'картки, панелі',line:'рамки, лінії',text:'заголовки й основний текст',accent:'кнопки й головні дії',second:'другорядний акцент, теги',hl:'виділення в заголовку, ціни',grad:'переливи фону, 3D-світло, виділення'};
+
+function board(p){
+  const c=p.c; const keys=p.show||['bg','surface','line','text','accent','second'];
+  const sw=keys.map(k=>{
+    if(k==='grad'){ const css=`linear-gradient(90deg, ${p.grad.join(', ')})`;
+      return `<button class="sw" type="button" data-hex="${css}" aria-label="Скопіювати градієнт"><i style="background:${css}"></i><span><b>${p.names.grad}</b><small>${roleText.grad}</small></span><code class="g">${p.grad.join('<br>')}</code></button>`; }
+    return `<button class="sw" type="button" data-hex="${c[k]}" aria-label="Скопіювати ${c[k]}"><i style="background:${c[k]}"></i><span><b>${(p.names&&p.names[k])||k}</b><small>${roleText[k]}</small></span><code>${c[k]}</code></button>`;
+  }).join('');
+  const checks=[['Текст / фон',c.text,c.bg],['Основний текст / фон',c.body,c.bg],['Кнопка',c.on,c.accent],['Акцент / фон',c.hl,c.bg]].map(([l,f,b])=>{const r=ratio(f,b);const cls=r>=4.5?'ok':r>=3?'big':'';return `<span class="${cls}" title="${f} на ${b}">${l} ${r.toFixed(1)}:1</span>`}).join('');
+  const notes = p.current ? '' : `<div class="notes">
+      <div><h3>Чому підходить Владі</h3><ul>${p.why.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h3>На що зважити</h3><ul>${p.care.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h3>Контраст</h3><div class="contrast">${checks}</div></div></div>`;
+  return `<section class="board" id="p-${p.id}" aria-labelledby="h-${p.id}">
+    <div class="board__head"><div><p class="eyebrow">${p.current?'Для порівняння':'Палітра '+p.n}</p><h2 id="h-${p.id}">${p.name}</h2></div>${p.pick?`<span class="pick">${p.pick}</span>`:''}<p class="mood">${p.mood}</p></div>
+    <div class="board__body">${mock(p)}<div><div class="swatches">${sw}</div>${notes}</div></div>
+  </section>`;
+}
+
+// overview strip
+document.getElementById('strip').innerHTML = P.map(p=>{
+  const k=['bg','surface','text','accent','second'];
+  const wts=[34,16,14,22,14];
+  const bars = p.grad
+    ? `<i style="flex:40;background:${p.c.bg}"></i><i style="flex:60;background:linear-gradient(160deg,${p.grad.join(',')})"></i>`
+    : k.map((x,i)=>`<i style="flex:${wts[i]};background:${p.c[x==='accent'&&p.id==='mocha'?'hl':x]}"></i>`).join('');
+  return `<a href="#p-${p.id}" class="${p.current?'cur':''}"><span class="bars">${bars}</span><span>${p.current?'Зараз':'№ '+p.n}</span><b>${p.short}</b></a>`;
+}).join('');
+// boards: flat palettes, then the gradient + 3D group, current last as the reference
+const groupHead = `<div class="group"><p class="eyebrow">Палітри 6–8</p><h2>Градієнти і живе 3D</h2>
+  <p>Тут перший екран не просто кольоровий: м’які переливи на фоні, скляні картки і 3D-сцена на Three.js, яка реагує на курсор. Сцени показують те, про що школа: кімнату в перспективі, фарбу і iPad. Поводіть мишкою над макетами.</p></div>`;
+document.getElementById('boards').innerHTML =
+  P.filter(p=>!p.current&&!p.scene).map(board).join('') + groupHead +
+  P.filter(p=>p.scene).map(board).join('') + board(P[0]);
+
+// copy HEX on click (falls back to selecting the code text)
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.sw'); if(!b) return;
+  const hex=b.dataset.hex;
+  const done=()=>{b.classList.add('copied');setTimeout(()=>b.classList.remove('copied'),1200)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(b.querySelector('code'));const s=getSelection();s.removeAllRanges();s.addRange(r)};
+  try{navigator.clipboard.writeText(hex).then(done,fallback)}catch(_){fallback()}
+});
+
+// ---------- Three.js scenes for palettes 6–8 ----------
+const sm=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};
+const SCENES={
+  // Wireframe interior that fills with colour: the site's "from line to sketch" idea in 3D
+  room(scene,cam,p){
+    const T=THREE, bgc=new T.Color(p.c.bg), [g1,g2,g3]=p.grad.map(h=>new T.Color(h));
+    cam.position.set(0,1.4,8.6); cam.lookAt(0,-.15,0);
+    const root=new T.Group(); scene.add(root);
+    const lineMat=new T.LineBasicMaterial({color:new T.Color(p.c.text),transparent:true,opacity:.8});
+    const fills=[];
+    const add=(geo,pos,col)=>{
+      const m=new T.Mesh(geo,new T.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.22,roughness:.4,metalness:.1,transparent:true,opacity:0}));
+      const e=new T.LineSegments(new T.EdgesGeometry(geo),lineMat);
+      const g=new T.Group(); g.add(m,e); g.position.set(...pos); root.add(g); fills.push(m);
+    };
+    const B=(x,y,z)=>new T.BoxGeometry(x,y,z), C=(a,b,h,s)=>new T.CylinderGeometry(a,b,h,s);
+    add(B(4.4,.04,3.6),[0,-1,0],g1.clone().lerp(bgc,.55));          // floor
+    add(B(4.4,2.8,.04),[0,.4,-1.8],g1.clone().lerp(bgc,.3));         // back wall
+    add(B(.04,2.8,3.6),[-2.2,.4,0],g2.clone().lerp(bgc,.4));         // side wall
+    add(B(1.2,1.1,.06),[1,.75,-1.76],g3);                            // window
+    add(B(2.4,.02,1.6),[-.2,-.97,-.2],g2.clone().lerp(bgc,.2));      // rug
+    add(B(2,.36,.8),[-.3,-.78,-1.15],g2);                            // sofa seat
+    add(B(2,.6,.18),[-.3,-.45,-1.5],g2);                             // sofa back
+    add(B(.18,.5,.8),[-1.36,-.7,-1.15],g2); add(B(.18,.5,.8),[.76,-.7,-1.15],g2);
+    add(C(.5,.5,.06,32),[-.2,-.62,-.1],g3); add(C(.05,.05,.36,12),[-.2,-.82,-.1],g3); // table
+    add(C(.03,.03,1.7,8),[1.5,-.15,-1.2],g1); add(new T.ConeGeometry(.28,.34,24,1,true),[1.5,.82,-1.2],g3); // lamp
+    add(C(.2,.16,.4,16),[-1.75,-.8,.6],g1); add(new T.IcosahedronGeometry(.36,1),[-1.75,-.3,.6],g2); // plant
+    scene.add(new T.AmbientLight(0xffffff,.6));
+    const l1=new T.PointLight(g2,1.5,14); l1.position.set(2.6,2.6,3); scene.add(l1);
+    const l2=new T.PointLight(g1,1.3,14); l2.position.set(-3,1.2,2.2); scene.add(l2);
+    return {update(t,ptr){
+      const k=(t%9)/9, f=sm(.12,.45,k)*(1-sm(.84,.98,k));
+      fills.forEach((m,i)=>{m.material.opacity=Math.max(0,Math.min(.9,f*1.25-i*.015))});
+      lineMat.opacity=.85-f*.4;
+      root.rotation.y=-.55+Math.sin(t*.25)*.12+ptr.x*.7; root.rotation.x=ptr.y*.2;
+    }};
+  },
+  // Iridescent paint drop: displaced sphere with a view-dependent pearl shader
+  blob(scene,cam,p){
+    const T=THREE; cam.position.set(0,0,5.4);
+    const [c1,c2,c3]=p.grad.map(h=>new T.Color(h));
+    const disp=`float d(vec3 p,float t){return sin(p.x*2.6+t*.9)*sin(p.y*3.1+t*1.1)*sin(p.z*2.2+t*.7)*.22+sin(p.y*4.+t*1.3)*.05;}`;
+    const mat=new T.ShaderMaterial({
+      uniforms:{t:{value:0},c1:{value:c1},c2:{value:c2},c3:{value:c3},ink:{value:new T.Color(p.c.text)}},
+      vertexShader:`uniform float t;varying vec3 vN;varying vec3 vV;varying float vD;${disp}
+        vec3 dp(vec3 q){return q+normalize(q)*d(q,t);}
+        void main(){vec3 p0=position;vec3 n=normalize(normal);vec3 p=dp(p0);vD=d(p0,t);
+          vec3 tn=normalize(cross(n,abs(n.y)>.99?vec3(1.,0.,0.):vec3(0.,1.,0.)));vec3 bn=cross(n,tn);
+          vec3 nn=normalize(cross(dp(p0+tn*.01)-p,dp(p0+bn*.01)-p));if(dot(nn,n)<0.)nn=-nn;
+          vN=normalize(normalMatrix*nn);vec4 mv=modelViewMatrix*vec4(p,1.);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
+      fragmentShader:`uniform vec3 c1;uniform vec3 c2;uniform vec3 c3;uniform vec3 ink;uniform float t;varying vec3 vN;varying vec3 vV;varying float vD;
+        void main(){vec3 n=normalize(vN);float fr=pow(1.-max(dot(n,vV),0.),2.);
+          float h=.5+.5*sin(dot(n,vec3(1.6,2.2,.8))*1.9+t*.5+vD*7.);
+          vec3 col=mix(c1,c2,smoothstep(0.,.6,h));col=mix(col,c3,smoothstep(.45,1.,h));
+          col=mix(col,vec3(1.),fr*.6);vec3 L=normalize(vec3(.4,.8,.6));
+          col+=pow(max(dot(reflect(-L,n),vV),0.),36.)*.55;col=mix(col,ink,(1.-fr)*.05);
+          gl_FragColor=vec4(col,1.);}`
+    });
+    const blob=new T.Mesh(new T.SphereGeometry(1.3,160,160),mat); scene.add(blob);
+    const drops=[.26,.17,.12].map((s,i)=>{const m=new T.Mesh(new T.SphereGeometry(1,48,48),mat);m.scale.setScalar(s);scene.add(m);return m});
+    return {update(t,ptr){
+      mat.uniforms.t.value=t;
+      blob.rotation.y=t*.15+ptr.x*.9; blob.rotation.x=ptr.y*.6;
+      drops.forEach((m,i)=>{const a=t*(.35+i*.12)+i*2.1;m.position.set(Math.cos(a)*(1.9+i*.2),Math.sin(a*1.3)*.9,Math.sin(a)*.8)});
+    }};
+  },
+  // Floating iPad + stylus; the sketch on screen fills with colour in a sweep
+  ipad(scene,cam,p){
+    const T=THREE; cam.position.set(0,0,6.4);
+    const [g1,g2,g3]=p.grad.map(h=>new T.Color(h));
+    const w=2.5,h=3.3,r=.24,s=new T.Shape();
+    s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);s.lineTo(w/2,h/2-r);s.quadraticCurveTo(w/2,h/2,w/2-r,h/2);
+    s.lineTo(-w/2+r,h/2);s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);s.lineTo(-w/2,-h/2+r);s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);
+    const geo=new T.ExtrudeGeometry(s,{depth:.1,bevelEnabled:true,bevelThickness:.04,bevelSize:.04,bevelSegments:4,curveSegments:12}); geo.center();
+    const body=new T.Mesh(geo,new T.MeshStandardMaterial({color:0x2b221d,metalness:.75,roughness:.3}));
+    // screen: line art + colour version, composited with a moving sweep
+    const W=480,H=640, base=document.createElement('canvas'), col=document.createElement('canvas'), out=document.createElement('canvas');
+    [base,col,out].forEach(c=>{c.width=W;c.height=H});
+    const draw=(ctx,fill)=>{
+      ctx.fillStyle='#FFF8F0';ctx.fillRect(0,0,W,H);
+      const vx=W*.52,vy=H*.38;
+      if(fill){const gr=ctx.createLinearGradient(0,0,0,H);gr.addColorStop(0,p.grad[2]+'55');gr.addColorStop(1,p.grad[0]+'33');ctx.fillStyle=gr;ctx.fillRect(0,0,W,H*.62);
+        ctx.fillStyle=p.grad[1]+'40';ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(W*.32,H*.62);ctx.lineTo(W*.72,H*.62);ctx.lineTo(W,H);ctx.fill();}
+      ctx.strokeStyle='rgba(60,40,30,.18)';ctx.lineWidth=1;
+      for(let i=0;i<=14;i++){const x=-W*.3+W*1.6*i/14;ctx.beginPath();ctx.moveTo(x,H);ctx.lineTo(vx,vy);ctx.stroke();}
+      ctx.strokeStyle='#3A2A21';ctx.lineWidth=2.2;ctx.lineJoin='round';ctx.lineCap='round';
+      ctx.strokeRect(W*.32,H*.24,W*.4,H*.38);
+      [[0,0,W*.32,H*.24],[W,0,W*.72,H*.24],[0,H,W*.32,H*.62],[W,H,W*.72,H*.62]].forEach(([a,b,c,d])=>{ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.stroke()});
+      if(fill){ctx.fillStyle=p.grad[0];ctx.fillRect(W*.2,H*.66,W*.6,H*.09);ctx.fillStyle=p.grad[1];ctx.fillRect(W*.22,H*.58,W*.56,H*.08);}
+      ctx.strokeRect(W*.2,H*.66,W*.6,H*.09);ctx.strokeRect(W*.22,H*.58,W*.56,H*.08);
+      if(fill){ctx.fillStyle=p.grad[2];ctx.fillRect(W*.5,H*.29,W*.16,H*.15);}
+      ctx.strokeRect(W*.5,H*.29,W*.16,H*.15);
+      ctx.beginPath();ctx.ellipse(W*.5,H*.84,W*.14,H*.025,0,0,7);if(fill){ctx.fillStyle=p.grad[2];ctx.fill();}ctx.stroke();
+      ctx.beginPath();ctx.moveTo(W*.82,H*.78);ctx.lineTo(W*.82,H*.4);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(W*.74,H*.4);ctx.lineTo(W*.9,H*.4);ctx.lineTo(W*.86,H*.33);ctx.lineTo(W*.78,H*.33);ctx.closePath();if(fill){ctx.fillStyle=p.grad[1];ctx.fill();}ctx.stroke();
+    };
+    draw(base.getContext('2d'),false); draw(col.getContext('2d'),true);
+    const octx=out.getContext('2d'), tex=new T.CanvasTexture(out);
+    const screen=new T.Mesh(new T.PlaneGeometry(w-.16,h-.16),new T.MeshBasicMaterial({map:tex}));
+    screen.position.z=.096;
+    const pad=new T.Group(); pad.add(body,screen); scene.add(pad);
+    const pm=new T.MeshStandardMaterial({color:0xF4EDE4,metalness:.15,roughness:.25});
+    const pen=new T.Group(); const barrel=new T.Mesh(new T.CylinderGeometry(.055,.055,2.3,24),pm);
+    const tip=new T.Mesh(new T.ConeGeometry(.055,.2,24),pm); tip.position.y=-1.25; tip.rotation.x=Math.PI; pen.add(barrel,tip);
+    scene.add(pen);
+    scene.add(new T.AmbientLight(0xffffff,.45));
+    const k1=new T.PointLight(g1,2.1,16); k1.position.set(3,2.4,4); scene.add(k1);
+    const k2=new T.PointLight(g3,1.6,16); k2.position.set(-3.2,-1.4,3.4); scene.add(k2);
+    const d=new T.DirectionalLight(0xffffff,.35); d.position.set(0,3,5); scene.add(d);
+    let lastX=-1;
+    return {update(t,ptr){
+      const k=(t%7)/7, sweep=sm(.1,.6,k)*(1-sm(.88,1,k)), x=Math.round(sweep*W);
+      if(x!==lastX){lastX=x;octx.drawImage(base,0,0);if(x>0)octx.drawImage(col,0,0,x,H,0,0,x,H);tex.needsUpdate=true;}
+      pad.rotation.y=-.35+Math.sin(t*.4)*.06+ptr.x*.55; pad.rotation.x=.1+ptr.y*.3+Math.sin(t*.5)*.03; pad.position.y=Math.sin(t*.8)*.07;
+      pen.position.set(1.25+ptr.x*.2,-.25+Math.sin(t*.8+1)*.12,1.1); pen.rotation.set(.2,0,.55+Math.sin(t*.6)*.05);
+    }};
+  }
+};
+
+(function initGL(){
+  if(!window.THREE) return; // CSS gradients still render without 3D
+  const RM=matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('canvas[data-scene]').forEach(cv=>{
+    let renderer;
+    try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(_){return}
+    renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));
+    const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(35,1,.1,100);
+    const p=P.find(x=>x.scene===cv.dataset.scene), s=SCENES[p.scene](scene,cam,p);
+    const host=cv.closest('.mock'), ptr={x:0,y:0,tx:0,ty:0};
+    host.addEventListener('pointermove',e=>{const r=host.getBoundingClientRect();ptr.tx=(e.clientX-r.left)/r.width-.5;ptr.ty=(e.clientY-r.top)/r.height-.5});
+    host.addEventListener('pointerleave',()=>{ptr.tx=0;ptr.ty=0});
+    let vis=false, raf=null; const t0=performance.now();
+    const frame=now=>{ptr.x+=(ptr.tx-ptr.x)*.06;ptr.y+=(ptr.ty-ptr.y)*.06;s.update(RM.matches?4:(now-t0)/1000,ptr);renderer.render(scene,cam)};
+    const loop=now=>{raf=null;frame(now);if(vis&&!RM.matches)raf=requestAnimationFrame(loop)};
+    const kick=()=>{if(raf===null)raf=requestAnimationFrame(loop)};
+    new ResizeObserver(()=>{const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();frame(performance.now())}).observe(cv);
+    new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)kick()}).observe(cv);
+    host.addEventListener('pointermove',kick);
+    RM.addEventListener('change',kick);
+  });
+})();
+</script>
