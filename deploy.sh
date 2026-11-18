@@ -9,6 +9,7 @@ mkdir -p public/palettes
   cat palettes/index.html
   printf '\n</html>\n'
 } > public/palettes/index.html
+cp palettes/img.js public/palettes/img.js
 BASE_PATH=/sketchvlada/ npm run build
 cd dist
 touch .nojekyll
