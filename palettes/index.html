@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Палітри Sketch Vlada</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=JetBrains+Mono:wght@500&family=Manrope:wght@400;600;700&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;600&family=Rubik:wght@400;500;700;800&family=Geologica:wght@300;400;500;600&family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;700&family=Onest:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a contact-sheet of palettes. Overview strip on top, then one full-width "board" per palette:
+   live site mockup in that palette + swatch rail + why/caveats. Page chrome stays neutral so palettes speak. */
+:root{
+  --bg:#F2F2EF; --card:#FFFFFF; --ink:#16181C; --muted:#5E6268; --rule:#DADBD6; --focus:#2B5BFF;
+  --f-display:"Unbounded","Manrope",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --f-hand:"Caveat","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#121316;--card:#1B1D21;--ink:#ECECE8;--muted:#9A9DA3;--rule:#2C2F35;--focus:#8FB0FF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121316;--card:#1B1D21;--ink:#ECECE8;--muted:#9A9DA3;--rule:#2C2F35;--focus:#8FB0FF;color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+.page{max-width:1240px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:48px 80px;display:grid;gap:64px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.eyebrow{font:500 12px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:6px}
+
+/* ---------- intro ---------- */
+.intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:32px 56px;align-items:end}
+.intro h1{font:700 clamp(30px,4.4vw,52px)/1.06 var(--f-display);letter-spacing:-.02em;margin-top:14px}
+.intro .lede{color:var(--muted);max-width:52ch;font-size:17px}
+.brief{display:grid;gap:10px;padding:20px 22px;border-radius:16px;background:var(--card);border:1px solid var(--rule)}
+.brief dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14.5px}
+.brief dt{color:var(--muted)}
+.brief dd{margin:0;font-weight:600}
+
+/* ---------- overview strip ---------- */
+.strip{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+.strip a.chosen{border-color:var(--ink)}
+.m-h1 em.mark{color:var(--m-text);background:linear-gradient(transparent 58%,var(--m-second) 58% 90%,transparent 90%);padding-inline:.06em}
+.strip a{display:grid;gap:10px;text-decoration:none;color:inherit;padding:10px;border-radius:14px;border:1px solid var(--rule);background:var(--card);transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s}
+.strip a:hover{transform:translateY(-3px);border-color:var(--muted)}
+.strip .bars{display:flex;height:84px;border-radius:9px;overflow:hidden}
+.strip .bars i{display:block}
+.strip b{font-weight:700;font-size:14px;line-height:1.25}
+.strip span{font:500 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.strip .cur{opacity:.8}
+
+/* ---------- board ---------- */
+.board{display:grid;gap:22px;scroll-margin-top:24px}
+.board__head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:end;border-top:1px solid var(--rule);padding-top:22px}
+.board__head h2{font:700 clamp(24px,2.8vw,34px)/1.1 var(--f-display);letter-spacing:-.015em}
+.board__head .mood{grid-column:1/-1;color:var(--muted);max-width:68ch}
+.pick{font:600 13px/1 var(--f-body);padding:8px 12px;border-radius:999px;border:1px solid var(--ink);white-space:nowrap}
+
+.board__body{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;align-items:start}
+
+/* swatches */
+.swatches{display:grid;gap:8px}
+.sw{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:14px;align-items:center;padding:8px 10px 8px 8px;border-radius:12px;background:var(--card);border:1px solid var(--rule);cursor:pointer;font:inherit;color:inherit;text-align:left;width:100%}
+.sw:hover{border-color:var(--muted)}
+.sw i{width:52px;height:40px;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(127,127,127,.25)}
+.sw b{display:block;font-size:14.5px}
+.sw small{display:block;color:var(--muted);font-size:13px;line-height:1.35}
+.sw code{font:500 12.5px/1 var(--f-mono);letter-spacing:.04em}
+.sw.copied code::after{content:" ✓"}
+
+.notes{display:grid;gap:14px;margin-top:6px}
+.notes h3{font:700 13px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.notes ul{margin:8px 0 0;padding-left:18px;display:grid;gap:6px;font-size:15px}
+.contrast{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.contrast span{font:500 12px/1 var(--f-mono);padding:6px 8px;border-radius:6px;background:var(--card);border:1px solid var(--rule)}
+.contrast span.ok::before{content:"AA ";color:#1F9D55}
+.contrast span.big::before{content:"AA large ";color:#B7791F}
+
+/* ---------- mockup (each one sets its own colors from palette vars) ---------- */
+.mock{--r:18px;position:relative;overflow:hidden;border-radius:var(--r);background:var(--m-bg);color:var(--m-body);box-shadow:0 1px 0 var(--rule),0 24px 60px -36px rgba(0,0,0,.45);isolation:isolate}
+.mock svg.persp{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.m-nav{display:flex;align-items:center;gap:18px;padding:16px 22px}
+.m-logo{font:700 17px/1 var(--f-display);color:var(--m-text);letter-spacing:-.01em}
+.m-logo em{font-style:normal;color:var(--m-logo2)}
+.m-links{display:flex;gap:16px;margin-left:auto;font-weight:600;font-size:13px}
+.m-links span:first-child{color:var(--m-text);box-shadow:0 2px 0 var(--m-accent)}
+.m-btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 18px;border-radius:999px;background:var(--m-accent);color:var(--m-on);font:700 13.5px/1 var(--f-body);white-space:nowrap}
+.m-btn--lg{min-height:48px;padding:0 24px;font-size:15px}
+.m-ghost{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--m-line);color:var(--m-text);font:700 15px/1 var(--f-body)}
+.m-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:24px;padding:26px 22px 28px;align-items:center}
+.m-kicker{display:inline-flex;align-items:center;gap:10px;font:500 11px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--m-kick)}
+.m-kicker::before{content:"";width:22px;height:1px;background:currentColor}
+.m-h1{margin:14px 0 14px;display:grid;gap:2px}
+.m-h1 small{font:500 clamp(15px,1.5vw,19px)/1.2 var(--f-body);color:var(--m-body)}
+.m-h1 b{font:700 clamp(22px,2.9vw,38px)/1.05 var(--f-display);letter-spacing:-.025em;color:var(--m-text)}
+.m-h1 em{font-style:normal;color:var(--m-hl)}
+.m-lede{font-size:14.5px;line-height:1.6;max-width:36ch;margin-bottom:18px}
+.m-cta{display:flex;flex-wrap:wrap;gap:10px}
+.m-visual{position:relative;display:grid;gap:12px}
+.m-sketch{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:var(--m-surface);box-shadow:inset 0 0 0 1px var(--m-line)}
+.m-sketch svg{position:absolute;inset:0;width:100%;height:100%}
+.m-note{position:absolute;right:10px;bottom:6px;font:600 20px/1 var(--f-hand);color:var(--m-hl);transform:rotate(-4deg)}
+.m-card{display:grid;gap:10px;padding:14px 16px;border-radius:14px;background:var(--m-surface);box-shadow:inset 0 0 0 1px var(--m-line)}
+.m-card .t{font-weight:700;font-size:14px;color:var(--m-text);line-height:1.3}
+.m-card .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-top:10px;border-top:1px dashed var(--m-line)}
+.m-tags{display:flex;gap:6px;flex-wrap:wrap}
+.m-tag{font:500 10px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:var(--m-bg);color:var(--m-text);box-shadow:inset 0 0 0 1px var(--m-line)}
+.m-tag--en{background:var(--m-second);color:var(--m-on2);box-shadow:none}
+.m-price{font:700 18px/1 var(--f-display);color:var(--m-price)}
+.m-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.m-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:#3FBF6B}
+.m-chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 22px 22px}
+.m-chip{font-weight:600;font-size:12.5px;padding:8px 14px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--m-line);color:var(--m-body);background:var(--m-surface)}
+.m-chip.on{background:var(--m-text);color:var(--m-bg);box-shadow:none}
+
+/* ---------- gradient + 3D variants ---------- */
+.group{display:grid;gap:12px;padding:28px;border-radius:20px;background:var(--card);border:1px solid var(--rule)}
+.group h2{font:700 clamp(26px,3.4vw,40px)/1.08 var(--f-display);letter-spacing:-.02em}
+.group p:not(.eyebrow){color:var(--muted);max-width:70ch}
+.m-aura{position:absolute;inset:0;z-index:-1;overflow:hidden;background:var(--m-bg)}
+.m-aura::before{content:"";position:absolute;inset:-25%;
+  background:
+    radial-gradient(36% 40% at 76% 28%,color-mix(in srgb,var(--m-g1) 75%,transparent),transparent 70%),
+    radial-gradient(32% 38% at 94% 80%,color-mix(in srgb,var(--m-g2) 65%,transparent),transparent 70%),
+    radial-gradient(42% 36% at 14% 104%,color-mix(in srgb,var(--m-g3) 50%,transparent),transparent 70%);
+  filter:blur(28px);animation:aura 16s ease-in-out infinite alternate}
+.is-light .m-aura::before{opacity:.75}
+.m-aura::after{content:"";position:absolute;inset:0;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@keyframes aura{to{transform:translate3d(-7%,5%,0) rotate(9deg) scale(1.06)}}
+.m-3d{position:relative;aspect-ratio:1/1;max-width:100%}
+.m-3d canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.is-3d .m-card{background:color-mix(in srgb,var(--m-surface) 50%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--m-text) 16%,transparent)}
+.is-3d .m-visual{margin-block:-20px -8px}
+.is-3d .m-note{right:auto;left:6px;bottom:auto;top:10px}
+.m-h1 em.grad{background:linear-gradient(90deg,var(--m-t1),var(--m-t2),var(--m-t3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sw code br{display:block}
+.sw .g{white-space:normal;text-align:right;line-height:1.5}
+
+/* ---------- round 3: six art directions (each mockup is self-contained) ---------- */
+.r3{display:grid;gap:72px}
+.r3-index{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.r3-index a{display:grid;gap:8px;padding:12px;border-radius:14px;border:1px solid var(--rule);background:var(--card);color:inherit;text-decoration:none;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s}
+.r3-index a:hover{transform:translateY(-3px);border-color:var(--muted)}
+.r3-index .sp{display:grid;place-items:center;height:84px;border-radius:9px;font-size:34px;line-height:1;overflow:hidden}
+.r3-index span.l{font:500 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.r3-index b{font-size:14px;line-height:1.25}
+.dir-info{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.dir-info>div{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--rule);display:grid;gap:8px;align-content:start;min-width:0}
+.dir-info h3{font:700 12px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.dir-info p{font-size:14.5px;line-height:1.55}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips i{display:inline-flex;align-items:center;gap:6px;font:500 11.5px/1 var(--f-mono);font-style:normal;padding:4px 8px 4px 4px;border-radius:999px;border:1px solid var(--rule)}
+.chips i::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(127,127,127,.3)}
+.spec{font-size:26px;line-height:1.1}
+.spec small{display:block;font:500 12px/1.4 var(--f-mono);color:var(--muted);margin-top:4px}
+
+.dm{position:relative;overflow:hidden;border-radius:18px;isolation:isolate;box-shadow:0 1px 0 var(--rule),0 24px 60px -36px rgba(0,0,0,.45)}
+.dm img{display:block}
+.dm a,.dm button{color:inherit}
+
+/* A — Журнал */
+.dA{background:#FBFAF7;color:#141414;font-family:"Inter Tight",system-ui,sans-serif;padding:22px 36px 30px}
+.dA .mast{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding-bottom:14px;border-bottom:1px solid #141414;font-size:12.5px}
+.dA .mast b{font-weight:600;letter-spacing:.32em;font-size:13px}
+.dA .mast .is{font:italic 500 17px/1 "Cormorant Garamond",serif}
+.dA .mast nav{justify-self:end;display:flex;gap:20px}
+.dA .hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:44px;padding-top:34px;align-items:end}
+.dA .lab{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#7A1E2C}
+.dA h4{margin:14px 0 22px;font:500 clamp(46px,6.4vw,92px)/.92 "Cormorant Garamond",serif;letter-spacing:-.02em;text-wrap:balance}
+.dA h4 i{color:#7A1E2C}
+.dA .lede{font-size:16px;line-height:1.6;max-width:40ch;color:#3C3C3C}
+.dA .acts{display:flex;align-items:center;gap:24px;margin-top:26px;flex-wrap:wrap}
+.dA .btn{background:#141414;color:#FBFAF7;padding:15px 26px;border-radius:999px;font-weight:600;font-size:14.5px}
+.dA .lnk{font-weight:600;font-size:14.5px;border-bottom:1px solid #141414;padding-bottom:3px}
+.dA .arch{position:relative;margin:0;border-radius:999px 999px 6px 6px;overflow:hidden;background:#E8DFD2;aspect-ratio:3/4}
+.dA .arch img{position:absolute;inset:auto 0 0;width:100%;height:96%;object-fit:contain;object-position:bottom}
+.dA figcaption{margin-top:10px;font:italic 500 16px/1.3 "Cormorant Garamond",serif;color:#555}
+.dA .toc{margin-top:30px;border-top:1px solid #141414;padding-top:14px;display:grid;grid-template-columns:auto 1fr;gap:4px 28px}
+.dA .toc h5{margin:4px 0 0;font:500 30px/1 "Cormorant Garamond",serif}
+.dA .toc ol{list-style:none;margin:0;padding:0;display:grid}
+.dA .toc li{display:grid;grid-template-columns:34px auto 1fr auto;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid #E2DED6;font-size:15px;transition:padding .35s cubic-bezier(.22,1,.36,1),color .2s}
+.dA .toc li:hover{padding-left:10px;color:#7A1E2C}
+.dA .toc li span:first-child{font:italic 500 16px/1 "Cormorant Garamond",serif;color:#7A1E2C}
+.dA .toc li i{border-bottom:1px dotted #B9B3A8;height:1px;align-self:center}
+.dA .toc li b{font:600 15px/1 "Inter Tight",sans-serif}
+
+/* B — Скетчбук */
+.dB{background-color:#F4F6F8;background-image:linear-gradient(rgba(47,111,237,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(47,111,237,.10) 1px,transparent 1px);background-size:24px 24px;color:#1B2330;font-family:"Rubik",system-ui,sans-serif;padding:20px 32px 34px}
+.dB .top{display:flex;align-items:center;gap:22px}
+.dB .logo{position:relative;font-weight:800;font-size:20px}
+.dB .logo svg{position:absolute;left:62px;top:-8px;width:76px;height:40px}
+.dB nav{margin-left:auto;display:flex;gap:18px;font-weight:500;font-size:14px}
+.dB .btn{display:inline-flex;align-items:center;gap:8px;background:#FFD43B;border:2px solid #1B2330;border-radius:12px;padding:11px 18px;font-weight:700;font-size:14.5px;box-shadow:4px 4px 0 #1B2330;transition:transform .2s,box-shadow .2s}
+.dB .btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 #1B2330}
+.dB .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px;align-items:center;padding-top:30px}
+.dB h4{margin:0;font:800 clamp(36px,4.8vw,64px)/1.02 "Rubik",sans-serif;letter-spacing:-.025em;text-wrap:balance}
+.dB h4 u{text-decoration:none;position:relative;white-space:nowrap}
+.dB h4 u svg{position:absolute;left:-4%;bottom:-.18em;width:108%;height:.42em;overflow:visible}
+.dB .hand{font:600 26px/1.1 "Caveat",cursive;color:#2F6FED;transform:rotate(-3deg);display:inline-block;margin:16px 0 22px}
+.dB .lede{font-size:16px;line-height:1.6;max-width:38ch;color:#3E4757;margin-bottom:22px}
+.dB .col{position:relative;height:420px}
+.dB .ph{position:absolute;margin:0;padding:8px 8px 30px;background:#fff;box-shadow:0 14px 30px -14px rgba(27,35,48,.45);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.dB .ph:hover{transform:rotate(0) scale(1.04)!important;z-index:5}
+.dB .ph img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.dB .ph figcaption{position:absolute;left:10px;bottom:6px;font:600 18px/1 "Caveat",cursive;color:#1B2330}
+.dB .ph::before{content:"";position:absolute;top:-12px;left:50%;width:84px;height:24px;margin-left:-42px;background:rgba(255,212,59,.75);transform:rotate(-4deg)}
+.dB .ph.p1{width:58%;left:0;top:18px;transform:rotate(-4deg)}
+.dB .ph.p2{width:52%;right:0;top:0;transform:rotate(5deg)}
+.dB .ph.p2::before{background:rgba(47,111,237,.45)}
+.dB .ph.p3{width:54%;left:22%;bottom:0;transform:rotate(-1.5deg)}
+.dB .ph.p3::before{background:rgba(229,72,77,.45)}
+.dB .note{position:absolute;right:2%;bottom:30px;width:132px;padding:14px 12px;background:#FFE680;box-shadow:0 10px 20px -10px rgba(0,0,0,.35);transform:rotate(4deg);font:600 22px/1.05 "Caveat",cursive;z-index:4}
+.dB .note b{display:block;font:800 30px/1 "Rubik",sans-serif}
+.dB .card{display:inline-grid;gap:6px;margin-top:6px;padding:14px 18px 16px;background:#fff;border:2px solid #1B2330;border-radius:12px;background-image:repeating-linear-gradient(#fff 0 27px,#E3E9F3 27px 28px);min-width:260px}
+.dB .card small{font-weight:500;color:#E5484D;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.dB .card b{font-weight:700;font-size:16px}
+.dB .card span{font:600 22px/1 "Caveat",cursive;color:#2F6FED}
+
+/* C — Галерея */
+.dC{background:#FFFFFF;color:#0E0E0E;font-family:"Geologica",system-ui,sans-serif;padding:20px 34px 30px;font-weight:300}
+.dC .top{display:flex;align-items:center;gap:24px;font-size:13px;font-weight:400}
+.dC .top b{font-weight:600}
+.dC .top nav{margin:0 auto;display:flex;gap:22px;color:#6E6E6E}
+.dC .top .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#E3342F;margin-right:8px}
+.dC .hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:30px;align-items:end;padding:64px 0 28px}
+.dC h4{margin:0;font:300 clamp(34px,4.6vw,64px)/1.02 "Geologica",sans-serif;letter-spacing:-.04em;text-wrap:balance}
+.dC h4 b{font-weight:600}
+.dC .side{display:grid;gap:18px;font-size:15px;line-height:1.55;color:#4A4A4A}
+.dC .btn{justify-self:start;background:#0E0E0E;color:#fff;padding:15px 22px;font-size:14px;font-weight:400;letter-spacing:.02em}
+.dC .wall{display:grid;grid-template-columns:1.25fr 1fr .85fr;gap:14px;align-items:end}
+.dC .wall figure{margin:0;display:grid;gap:10px}
+.dC .wall img{width:100%;object-fit:cover;transition:filter .5s}
+.dC .wall figure:nth-child(1) img{aspect-ratio:4/3.2}
+.dC .wall figure:nth-child(2) img{aspect-ratio:4/3}
+.dC .wall figure:nth-child(3) img{aspect-ratio:1/1}
+.dC .wall:hover img{filter:grayscale(1) opacity(.45)}
+.dC .wall figure:hover img{filter:none}
+.dC .wall figcaption{font-size:12.5px;line-height:1.45;color:#6E6E6E}
+.dC .wall figcaption b{display:block;color:#0E0E0E;font-weight:500}
+.dC .nums{display:flex;gap:38px;margin-top:26px;padding-top:16px;border-top:1px solid #E8E8E8;font-size:13px;color:#6E6E6E}
+.dC .nums b{display:block;font:400 30px/1.1 "Geologica",sans-serif;color:#0E0E0E;letter-spacing:-.03em}
+
+/* D — Кіно */
+.dD{--mx:62%;--my:40%;background:#0E0C0B;color:#EFE8DC;font-family:"Inter Tight",system-ui,sans-serif;min-height:600px;display:grid;grid-template-rows:auto 1fr auto}
+.dD::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(38% 52% at var(--mx) var(--my),rgba(242,165,65,.38),rgba(242,165,65,.08) 45%,transparent 72%);transition:background .1s}
+.dD::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.dD .top{display:flex;align-items:center;gap:22px;padding:22px 32px;font-size:13px;position:relative;z-index:3}
+.dD .top b{font:700 16px/1 "Oswald",sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.dD .top nav{margin-left:auto;display:flex;gap:22px;color:#B5AC9F}
+.dD .stage{position:relative;display:grid;place-items:center;min-height:400px}
+.dD .big{position:absolute;left:0;right:0;text-align:center;font:700 clamp(70px,15vw,210px)/.8 "Oswald",sans-serif;text-transform:uppercase;letter-spacing:-.01em;white-space:nowrap}
+.dD .big.back{top:4%;color:#EFE8DC;z-index:1}
+.dD .big.front{bottom:6%;color:transparent;-webkit-text-stroke:1.5px #F2A541;z-index:3;font-size:clamp(46px,9.5vw,132px)}
+.dD .stage img{position:relative;z-index:2;height:430px;width:auto;object-fit:contain;filter:contrast(1.05) saturate(.9);-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
+.dD .bot{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;gap:20px;padding:0 32px 26px;position:relative;z-index:3}
+.dD .bot p{font-size:15px;line-height:1.55;color:#C9C0B3;max-width:34ch}
+.dD .btn{text-align:center;background:#F2A541;color:#0E0C0B;padding:16px 26px;border-radius:2px;font:600 15px/1 "Oswald",sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.dD .play{justify-self:end;display:flex;align-items:center;gap:12px;font-size:14px}
+.dD .play i{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;border:1px solid #EFE8DC;font-style:normal;font-size:14px}
+.dD .tick{grid-column:1/-1;display:flex;gap:30px;padding-top:16px;border-top:1px solid rgba(239,232,220,.18);font:500 12px/1 "Oswald",sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#8E857A;overflow:hidden;white-space:nowrap}
+
+/* E — Креслення */
+.dE{background-color:#E7E6E1;background-image:linear-gradient(rgba(17,17,17,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(17,17,17,.06) 1px,transparent 1px);background-size:16px 16px;color:#111;font-family:"IBM Plex Mono",ui-monospace,monospace;padding:18px}
+.dE .sheet{border:1.5px solid #111;position:relative;padding:18px 24px 24px}
+.dE .top{display:flex;align-items:center;gap:20px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding-bottom:12px;border-bottom:1px solid #111}
+.dE .top b{font:700 16px/1 "IBM Plex Sans Condensed",sans-serif;letter-spacing:.04em}
+.dE .top nav{margin-left:auto;display:flex;gap:18px}
+.dE .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;padding-top:26px;align-items:start}
+.dE .code{font-size:11.5px;letter-spacing:.08em;color:#FF5A1F}
+.dE h4{position:relative;margin:10px 0 20px;font:700 clamp(40px,5.6vw,80px)/.9 "IBM Plex Sans Condensed",sans-serif;text-transform:uppercase;letter-spacing:-.01em}
+.dE .dim{display:flex;align-items:center;gap:8px;font-size:11px;color:#555;margin-bottom:20px}
+.dE .dim i{flex:1;height:1px;background:#111;position:relative}
+.dE .dim i::before,.dE .dim i::after{content:"";position:absolute;top:-4px;width:1px;height:9px;background:#111}
+.dE .dim i::before{left:0}.dE .dim i::after{right:0}
+.dE .lede{font-size:13.5px;line-height:1.65;max-width:44ch;color:#333;margin-bottom:22px}
+.dE .btn{display:inline-block;background:#FF5A1F;color:#111;padding:14px 20px;font-weight:500;font-size:13px;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,color .2s}
+.dE .btn:hover{background:#111;color:#FF5A1F}
+.dE .draw{background:#F4F3EF;border:1px solid #111;aspect-ratio:4/3.1;position:relative}
+.dE .draw svg{position:absolute;inset:0;width:100%;height:100%}
+.dE table{width:100%;border-collapse:collapse;margin-top:22px;font-size:12.5px}
+.dE th,.dE td{border:1px solid #111;padding:8px 10px;text-align:left}
+.dE th{font-weight:500;text-transform:uppercase;letter-spacing:.06em;font-size:11px;background:#DCDBD5}
+.dE td:last-child{text-align:right;font-weight:500}
+.dE tr:hover td{background:#FFE7DC}
+.dE .stamp{position:absolute;right:-1.5px;bottom:-1.5px;display:grid;grid-template-columns:auto auto;border:1.5px solid #111;background:#E7E6E1;font-size:10.5px;text-transform:uppercase}
+.dE .stamp span{padding:5px 10px;border:.5px solid #111}
+
+/* F — Бенто */
+.dF{background:#F7EDE8;color:#2A2320;font-family:"Onest",system-ui,sans-serif;padding:18px}
+.dF .top{display:flex;align-items:center;gap:20px;background:#fff;border-radius:999px;padding:10px 10px 10px 22px;font-size:14px;font-weight:500}
+.dF .top b{font-weight:800;font-size:17px}
+.dF .top nav{margin:0 auto;display:flex;gap:20px;color:#6B5F59}
+.dF .top .btn{background:#2A2320;color:#fff;padding:12px 20px;border-radius:999px;font-weight:600}
+.dF .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(140px,auto));gap:12px;margin-top:12px}
+.dF .t{border-radius:28px;padding:22px;position:relative;overflow:hidden;transition:transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s}
+.dF .t:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 22px 40px -24px rgba(42,35,32,.5)}
+.dF .main{grid-column:span 2;grid-row:span 2;background:#3F4A2E;color:#F7EDE8;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.dF .main small{font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#C9D3A8}
+.dF .main h4{margin:12px 0 0;font:800 clamp(30px,3.6vw,50px)/1.02 "Onest",sans-serif;letter-spacing:-.03em;text-wrap:balance}
+.dF .main p{font-size:15px;line-height:1.55;color:#DCD9C9;max-width:36ch}
+.dF .main .btn{align-self:flex-start;background:#F6E3A1;color:#2A2320;padding:15px 24px;border-radius:999px;font-weight:700}
+.dF .photo{grid-row:span 2;background:#F2C9BE;padding:0}
+.dF .photo img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:96%;width:auto;max-width:none}
+.dF .photo span{position:absolute;left:16px;top:16px;background:#fff;border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600;z-index:2}
+.dF .stat{background:#F6E3A1}
+.dF .stat b{display:block;font:800 44px/1 "Onest",sans-serif;letter-spacing:-.04em}
+.dF .stat span{font-size:14px;color:#5C5048}
+.dF .work{padding:0;background:#fff}
+.dF .work img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dF .work span{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.9);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:600}
+.dF .free{background:#fff;display:flex;flex-direction:column;justify-content:space-between}
+.dF .free b{font-size:17px;line-height:1.25}
+.dF .free i{font-style:normal;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#2A2320;color:#fff;align-self:flex-end;transition:transform .35s}
+.dF .free:hover i{transform:rotate(-45deg)}
+.dF .tools{grid-column:span 2;background:#E9DCF2;display:flex;flex-wrap:wrap;align-content:center;gap:8px}
+.dF .tools span{background:#fff;border-radius:999px;padding:9px 14px;font-weight:600;font-size:13.5px}
+
+@media (max-width:980px){
+  .r3-index{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .dir-info{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dA .hero,.dB .hero,.dC .hero,.dE .hero{grid-template-columns:1fr}
+  .dA .arch{max-width:320px}
+  .dF .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dF .tools{grid-column:span 2}
+}
+@media (max-width:720px){
+  .r3-index{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dir-info{grid-template-columns:1fr}
+  .dA{padding:18px 18px 24px}.dB{padding:18px 18px 26px}.dC{padding:18px 18px 24px}
+  .dA .mast{grid-template-columns:1fr auto}.dA .mast nav,.dB nav,.dC .top nav,.dD .top nav,.dE .top nav,.dF .top nav{display:none}
+  .dA .toc{grid-template-columns:1fr}
+  .dB .col{height:340px}.dB .card{min-width:0}
+  .dC .hero{padding-top:36px}.dC .wall{grid-template-columns:1fr 1fr}.dC .wall figure:nth-child(3){display:none}.dC .nums{gap:20px;flex-wrap:wrap}
+  .dD .top,.dD .bot{padding-inline:18px}.dD .bot{grid-template-columns:1fr}.dD .play{justify-self:start}.dD .stage img{height:320px}.dD .stage{min-height:320px}
+  .dE{padding:10px}.dE .sheet{padding:14px 14px 70px}.dE table{font-size:11.5px}
+  .dF{padding:12px}.dF .top{padding-left:16px}.dF .grid{grid-template-columns:1fr 1fr}.dF .main{grid-column:span 2}.dF .photo{grid-row:span 1;min-height:220px}
+}
+
+.foot{border-top:1px solid var(--rule);padding-top:22px;color:var(--muted);font-size:14.5px;display:grid;gap:8px;max-width:72ch}
+.foot b{color:var(--ink)}
+
+@media (max-width:980px){
+  .board__body{grid-template-columns:1fr}
+  .strip{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (min-width:981px) and (max-width:1200px){.strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (min-width:721px) and (max-width:980px){.strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:720px){
+  .intro{grid-template-columns:1fr}
+  .m-hero{grid-template-columns:1fr}
+  .m-links{display:none}
+  .m-nav .m-btn{margin-left:auto}
+  .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .board__head{grid-template-columns:1fr}
+  .pick{justify-self:start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main class="page">
+  <header class="intro">
+    <div>
+      <p class="eyebrow">Sketch Vlada School · нова кольорова гамма</p>
+      <h1>Раунд 3: шість різних характерів</h1>
+    </div>
+    <div style="display:grid;gap:16px">
+      <p class="lede">Тут змінюється не лише колір, а все: шрифти, фон, композиція першого екрана і головний прийом. Шість напрямків, які не схожі ні між собою, ні на поточний сайт. Під ними, для порівняння, раунди 2 і 1 з палітрами. Поводіть курсором по макетах: частина елементів реагує.</p>
+      <div class="brief">
+        <dl>
+          <dt>Аудиторія</dt><dd>жінки 25–45, новачки й дизайнерки інтер'єру</dd>
+          <dt>Що продаємо</dt><dd>навичку, з якою заробляють</dd>
+          <dt>Що лишаємо</dt><dd>шрифти, перспективні лінії, рукописні підписи</dd>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+    <section class="r3" aria-label="Раунд 3: напрямки">
+  <nav class="r3-index" aria-label="Напрямки раунду 3">
+    <a href="#d-a"><span class="sp" style="background:#FBFAF7;color:#7A1E2C;font:italic 500 40px/1 'Cormorant Garamond',serif">Аа</span><span class="l">Напрямок A</span><b>Журнал</b></a>
+    <a href="#d-b"><span class="sp" style="background:#F4F6F8;background-image:linear-gradient(rgba(47,111,237,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(47,111,237,.14) 1px,transparent 1px);background-size:12px 12px;color:#1B2330;font:800 36px/1 Rubik,sans-serif">Аа</span><span class="l">Напрямок B</span><b>Скетчбук</b></a>
+    <a href="#d-c"><span class="sp" style="background:#fff;color:#0E0E0E;font:300 38px/1 Geologica,sans-serif;box-shadow:inset 0 0 0 1px #E6E6E6">Аа</span><span class="l">Напрямок C</span><b>Галерея</b></a>
+    <a href="#d-d"><span class="sp" style="background:radial-gradient(circle at 60% 40%,#5A3A17,#0E0C0B 70%);color:#EFE8DC;font:700 42px/1 Oswald,sans-serif">АА</span><span class="l">Напрямок D</span><b>Кіно</b></a>
+    <a href="#d-e"><span class="sp" style="background:#E7E6E1;color:#111;font:700 38px/1 'IBM Plex Sans Condensed',sans-serif;box-shadow:inset 0 0 0 1.5px #111"><span>АА<span style="color:#FF5A1F">.</span></span></span><span class="l">Напрямок E</span><b>Креслення</b></a>
+    <a href="#d-f"><span class="sp" style="background:#F7EDE8;color:#F7EDE8;font:800 34px/1 Onest,sans-serif"><span style="background:#3F4A2E;border-radius:16px;padding:10px 14px">Аа</span></span><span class="l">Напрямок F</span><b>Бенто</b></a>
+  </nav>
+
+  <!-- A — Журнал -->
+  <section class="board" id="d-a" aria-labelledby="h-da">
+    <div class="board__head"><div><p class="eyebrow">Напрямок A</p><h2 id="h-da">Журнал про інтер'єр</h2></div><span class="pick">Дорого і спокійно</span>
+      <p class="mood">Сайт як розворот журналу про дизайн: білий папір, великий витончений шрифт із засічками, фото Влади в арці і список курсів як зміст номера. Без ліній і сітки, багато повітря.</p></div>
+    <div class="dm dA" role="img" aria-label="Макет: напрямок Журнал">
+      <div class="mast"><b>SKETCH VLADA</b><span class="is">Онлайн-школа · Випуск 01</span><nav><span>Курси</span><span>Роботи</span><span>Про Владу</span><span>Відгуки</span></nav></div>
+      <div class="hero">
+        <div>
+          <span class="lab">Онлайн-школа скетчингу і моделювання</span>
+          <h4>Від першої лінії до <i>скетчу</i> на замовлення</h4>
+          <p class="lede">Навчу малювати інтер'єри на iPad, навіть якщо ви ніколи не малювали. Від першої лінії до скетчів, за які платять дизайнери.</p>
+          <div class="acts"><span class="btn">Обрати курс</span><span class="lnk">Безкоштовні уроки →</span></div>
+        </div>
+        <figure><div class="arch"><img data-img="about" alt=""></div><figcaption>Владислава Бондаренко, архітекторка і художниця</figcaption></figure>
+      </div>
+      <div class="toc"><h5>Зміст</h5><ol>
+        <li><span>01</span><span>Безкоштовні уроки зі зворотним зв'язком</span><i></i><b>$0</b></li>
+        <li><span>02</span><span>Інтер'єрний скетчинг. Від новачка до профі</span><i></i><b>$449</b></li>
+        <li><span>03</span><span>SketchUp на iPad</span><i></i><b>$350</b></li>
+      </ol></div>
+    </div>
+    <div class="dir-info">
+      <div><h3>Шрифти</h3><p class="spec" style="font-family:'Cormorant Garamond',serif;font-weight:500">Cormorant Garamond<small>заголовки, курсив для акцентів</small></p><p class="spec" style="font-family:'Inter Tight',sans-serif;font-size:20px">Inter Tight<small>текст і інтерфейс</small></p></div>
+      <div><h3>Кольори</h3><div class="chips"><i style="--c:#FBFAF7">#FBFAF7</i><i style="--c:#141414">#141414</i><i style="--c:#7A1E2C">#7A1E2C</i><i style="--c:#E8DFD2">#E8DFD2</i></div><p>Папір, чорнило і один глибокий винний акцент.</p></div>
+      <div><h3>Фон і композиція</h3><p>Чистий білий без текстур. Асиметрична сітка журналу, тонкі лінійки, фото в арці як архітектурний мотив.</p></div>
+      <div><h3>Головний прийом</h3><p>Курси подані як зміст номера: наведення зсуває рядок і підсвічує його. Плавна поява тексту рядками при скролі.</p></div>
+    </div>
+  </section>
+
+  <!-- B — Скетчбук -->
+  <section class="board" id="d-b" aria-labelledby="h-db">
+    <div class="board__head"><div><p class="eyebrow">Напрямок B</p><h2 id="h-db">Скетчбук</h2></div><span class="pick">Тепло і по-людськи</span>
+      <p class="mood">Сайт як розворот робочого альбому: папір у клітинку, роботи студенток приклеєні скотчем, рукописні нотатки синьою ручкою, жовтий стікер. Дружньо для новачків і показує процес, а не тільки результат.</p></div>
+    <div class="dm dB" role="img" aria-label="Макет: напрямок Скетчбук">
+      <div class="top"><span class="logo">Sketch Vlada<svg viewBox="0 0 76 40" aria-hidden="true"><ellipse cx="38" cy="20" rx="36" ry="16" fill="none" stroke="#E5484D" stroke-width="2" transform="rotate(-4 38 20)"/></svg></span>
+        <nav><span>Курси</span><span>Роботи</span><span>Про Владу</span><span>Питання</span></nav><span class="btn">Обрати курс</span></div>
+      <div class="hero">
+        <div>
+          <h4>Навчу малювати інтер'єри на <u>iPad<svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M2 14 C30 4 60 18 98 6" fill="none" stroke="#E5484D" stroke-width="4" stroke-linecap="round"/></svg></u></h4>
+          <span class="hand">навіть якщо ніколи не малювали ↓</span>
+          <p class="lede">Від першої лінії до скетчів, за які платять дизайнери. Procreate або Infinite Painter.</p>
+          <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start"><span class="btn">Почати безкоштовно →</span>
+          <span class="card"><small>Курс</small><b>Інтер'єрний скетчинг</b><span>від новачка до профі · $449</span></span></div>
+        </div>
+        <div class="col">
+          <figure class="ph p1"><img data-img="svitlana" alt=""><figcaption>Світлана, вітальня</figcaption></figure>
+          <figure class="ph p2"><img data-img="nelya" alt=""><figcaption>Неля, «Тіфані»</figcaption></figure>
+          <figure class="ph p3"><img data-img="olha" alt=""><figcaption>Ольга, текстури</figcaption></figure>
+          <div class="note"><b>2000+</b>студентів уже малюють</div>
+        </div>
+      </div>
+    </div>
+    <div class="dir-info">
+      <div><h3>Шрифти</h3><p class="spec" style="font-family:Rubik,sans-serif;font-weight:800">Rubik<small>щільні дружні заголовки</small></p><p class="spec" style="font-family:Caveat,cursive;font-weight:600;font-size:30px">Caveat<small>рукописні нотатки</small></p></div>
+      <div><h3>Кольори</h3><div class="chips"><i style="--c:#F4F6F8">#F4F6F8</i><i style="--c:#1B2330">#1B2330</i><i style="--c:#FFD43B">#FFD43B</i><i style="--c:#E5484D">#E5484D</i><i style="--c:#2F6FED">#2F6FED</i></div><p>Папір у клітинку, чорнило, маркер, червоний олівець і синя ручка.</p></div>
+      <div><h3>Фон і композиція</h3><p>Клітинка замість перспективних ліній. Колаж із фото під кутом, як у справжньому альбомі. Кнопки з жорсткою тінню, ніби вирізані з картону.</p></div>
+      <div><h3>Головний прийом</h3><p>Підкреслення і кола малюються «від руки» при появі. Фото можна підняти й розглянути, кнопка «вдавлюється» при натисканні.</p></div>
+    </div>
+  </section>
+
+  <!-- C — Галерея -->
+  <section class="board" id="d-c" aria-labelledby="h-dc">
+    <div class="board__head"><div><p class="eyebrow">Напрямок C</p><h2 id="h-dc">Галерея</h2></div><span class="pick">Роботи головні</span>
+      <p class="mood">Мінімалізм білої галереї: майже нічого зайвого, тонкий шрифт, а роботи студенток висять великими «на стіні» з підписами, як у музеї. Найкраще показує якість результату.</p></div>
+    <div class="dm dC" role="img" aria-label="Макет: напрямок Галерея">
+      <div class="top"><b><span class="dot"></span>Sketch Vlada School</b><nav><span>Курси</span><span>Роботи</span><span>Про Владу</span><span>Відгуки</span></nav><span>Курси (7)</span></div>
+      <div class="hero">
+        <h4>Школа, де інтер'єр <b>починається з&nbsp;лінії.</b></h4>
+        <div class="side"><p>Скетчинг на iPad і моделювання в SketchUp та ArchiCAD. Від першої лінії до скетчів, за які платять дизайнери.</p><span class="btn">Переглянути курси</span></div>
+      </div>
+      <div class="wall">
+        <figure><img data-img="nelya" alt=""><figcaption><b>Неля Дєткіна</b>Ресторан «Тіфані»</figcaption></figure>
+        <figure><img data-img="svitlana" alt=""><figcaption><b>Світлана Неділько</b>Скетч вітальні</figcaption></figure>
+        <figure><img data-img="yelena" alt=""><figcaption><b>Єлена Чилек</b>3D скетч-план ресторану</figcaption></figure>
+      </div>
+      <div class="nums"><span><b>2000+</b>студентів пройшли навчання</span><span><b>1000+</b>скетчів Влади на замовлення</span><span><b>7</b>курсів</span></div>
+    </div>
+    <div class="dir-info">
+      <div><h3>Шрифти</h3><p class="spec" style="font-family:Geologica,sans-serif;font-weight:300">Geologica<small>один шрифт, контраст тонкого і жирного</small></p></div>
+      <div><h3>Кольори</h3><div class="chips"><i style="--c:#FFFFFF">#FFFFFF</i><i style="--c:#0E0E0E">#0E0E0E</i><i style="--c:#6E6E6E">#6E6E6E</i><i style="--c:#E3342F">#E3342F</i></div><p>Білий, чорний і одна червона крапка. Колір дають самі роботи.</p></div>
+      <div><h3>Фон і композиція</h3><p>Чистий білий, багато порожнього простору, роботи великим форматом. Підписи дрібні, як етикетки в музеї.</p></div>
+      <div><h3>Головний прийом</h3><p>Наведення на роботу приглушує решту, щоб дивилися на одну. Галерея гортається горизонтально, як прогулянка залом.</p></div>
+    </div>
+  </section>
+
+  <!-- D — Кіно -->
+  <section class="board" id="d-d" aria-labelledby="h-dd">
+    <div class="board__head"><div><p class="eyebrow">Напрямок D</p><h2 id="h-dd">Кіно</h2></div><span class="pick">Найсміливіший</span>
+      <p class="mood">Перший екран як постер до фільму: темрява, тепле прожекторне світло, величезне слово позаду Влади і обведене спереду, тож вона стоїть «всередині» напису. Зерно плівки. Поводіть курсором, щоб рухати світло.</p></div>
+    <div class="dm dD" id="dD" role="img" aria-label="Макет: напрямок Кіно">
+      <div class="top"><b>Sketch Vlada</b><nav><span>Курси</span><span>Роботи</span><span>Про Владу</span><span>Відгуки</span></nav></div>
+      <div class="stage"><span class="big back">Скетчинг</span><img data-img="hero" alt=""><span class="big front">інтер'єрів</span></div>
+      <div class="bot">
+        <p>Онлайн-школа Владислави Бондаренко. Навчу малювати інтер'єри на iPad, навіть якщо ви ніколи не малювали.</p>
+        <span class="btn">Обрати курс</span>
+        <span class="play"><i>▶</i>Відео про школу</span>
+        <div class="tick"><span>Procreate</span><span>Infinite Painter</span><span>SketchUp</span><span>ArchiCAD</span><span>2000+ студентів</span><span>1000+ скетчів на замовлення</span></div>
+      </div>
+    </div>
+    <div class="dir-info">
+      <div><h3>Шрифти</h3><p class="spec" style="font-family:Oswald,sans-serif;font-weight:700;text-transform:uppercase">Oswald<small>вузькі величезні заголовки</small></p><p class="spec" style="font-family:'Inter Tight',sans-serif;font-size:20px">Inter Tight<small>текст</small></p></div>
+      <div><h3>Кольори</h3><div class="chips"><i style="--c:#0E0C0B">#0E0C0B</i><i style="--c:#EFE8DC">#EFE8DC</i><i style="--c:#F2A541">#F2A541</i><i style="--c:#8E857A">#8E857A</i></div><p>Темрява, кістяний білий і тепле світло прожектора.</p></div>
+      <div><h3>Фон і композиція</h3><p>Фото Влади в центрі, шари тексту позаду і попереду неї. Світлова пляма і зерно плівки замість ліній.</p></div>
+      <div><h3>Головний прийом</h3><p>Прожектор слідує за курсором. При скролі слова роз'їжджаються, і камера ніби наближається до Влади (можна зробити відео).</p></div>
+    </div>
+  </section>
+
+  <!-- E — Креслення -->
+  <section class="board" id="d-e" aria-labelledby="h-de">
+    <div class="board__head"><div><p class="eyebrow">Напрямок E</p><h2 id="h-de">Креслення</h2></div><span class="pick">Архітектурне коріння</span>
+      <p class="mood">Сайт як робочий аркуш архітектора: міліметрівка, рамка і штамп креслення, розмірні лінії, моноширинний шрифт і помаранчевий, як на будівельних позначках. Точно, технічно, ні на кого не схоже.</p></div>
+    <div class="dm dE" role="img" aria-label="Макет: напрямок Креслення">
+      <div class="sheet">
+        <div class="top"><b>SKETCH VLADA</b><span>Онлайн-школа</span><nav><span>Курси</span><span>Роботи</span><span>Про Владу</span></nav></div>
+        <div class="hero">
+          <div>
+            <span class="code">[ А-01 ] ОНЛАЙН-ШКОЛА</span>
+            <h4>Скетчинг і моделювання інтер'єрів</h4>
+            <div class="dim"><span>0</span><i></i><span>2000+ студентів</span><i></i><span>∞</span></div>
+            <p class="lede">Навчу малювати інтер'єри на iPad, навіть якщо ви ніколи не малювали. Лінія → тон → матеріал → подача.</p>
+            <span class="btn">[ Обрати курс ]</span>
+          </div>
+          <div class="draw"><svg viewBox="0 0 400 310" aria-hidden="true">
+            <g fill="none" stroke="#111" stroke-width="1.3">
+              <path d="M60 40 L340 40 L340 250 L60 250 Z"/><path d="M60 40 L140 100 L260 100 L340 40 M60 250 L140 190 L260 190 L340 250 M140 100 L140 190 M260 100 L260 190"/>
+              <path d="M160 190 L160 168 Q160 160 168 160 L232 160 Q240 160 240 168 L240 190"/><path d="M150 190 L250 190 L250 200 L150 200 Z"/>
+              <path d="M200 100 L200 128 M188 128 L212 128 L208 138 L192 138 Z"/><rect x="214" y="110" width="34" height="36"/>
+            </g>
+            <g stroke="#FF5A1F" stroke-width="1" fill="#FF5A1F" font-family="IBM Plex Mono,monospace" font-size="10">
+              <path d="M60 270 L340 270 M60 265 L60 275 M340 265 L340 275" fill="none"/><text x="182" y="285" stroke="none">3 600</text>
+              <path d="M360 40 L360 250 M355 40 L365 40 M355 250 L365 250" fill="none"/><text x="366" y="150" stroke="none">2 700</text>
+              <circle cx="200" cy="100" r="3"/><text x="206" y="94" stroke="none">точка сходу</text>
+              <circle cx="96" cy="145" r="9" fill="none"/><text x="93" y="149" stroke="none">1</text>
+              <circle cx="232" cy="128" r="9" fill="none"/><text x="229" y="132" stroke="none">2</text>
+              <circle cx="200" cy="212" r="9" fill="none"/><text x="197" y="216" stroke="none">3</text>
+            </g></svg></div>
+        </div>
+        <table><thead><tr><th>Курс</th><th>Формат</th><th>Ціна</th></tr></thead><tbody>
+          <tr><td>Безкоштовні уроки</td><td>iPad · зворотний зв'язок</td><td>$0</td></tr>
+          <tr><td>Інтер'єрний скетчинг</td><td>iPad · з нуля</td><td>$449</td></tr>
+          <tr><td>ArchiCAD з нуля</td><td>ПК · моделювання</td><td>$399</td></tr></tbody></table>
+        <div class="stamp"><span>Аркуш</span><span>01</span><span>Автор</span><span>В. Бондаренко</span></div>
+      </div>
+    </div>
+    <div class="dir-info">
+      <div><h3>Шрифти</h3><p class="spec" style="font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:700;text-transform:uppercase">Plex Sans Condensed<small>заголовки</small></p><p class="spec" style="font-family:'IBM Plex Mono',monospace;font-size:18px">IBM Plex Mono<small>текст, цифри, підписи</small></p></div>
+      <div><h3>Кольори</h3><div class="chips"><i style="--c:#E7E6E1">#E7E6E1</i><i style="--c:#111111">#111111</i><i style="--c:#FF5A1F">#FF5A1F</i><i style="--c:#DCDBD5">#DCDBD5</i></div><p>Міліметрівка, графіт і сигнальний помаранчевий.</p></div>
+      <div><h3>Фон і композиція</h3><p>Дрібна міліметрова сітка, рамка аркуша і штамп. Курси таблицею, як специфікація в проєкті.</p></div>
+      <div><h3>Головний прийом</h3><p>Креслення кімнати і розмірні лінії домальовуються при скролі, номери ①②③ пояснюють етапи навчання.</p></div>
+    </div>
+  </section>
+
+  <!-- F — Бенто -->
+  <section class="board" id="d-f" aria-labelledby="h-df">
+    <div class="board__head"><div><p class="eyebrow">Напрямок F</p><h2 id="h-df">Бенто</h2></div><span class="pick">Сучасно і м'яко</span>
+      <p class="mood">Перший екран зібраний з м'яких округлих плиток, як у застосунках Apple: головна пропозиція, фото Влади, цифри, робота студентки, безкоштовний старт. Усе важливе видно одразу, без скролу. Оливковий, пудровий і вершковий.</p></div>
+    <div class="dm dF" role="img" aria-label="Макет: напрямок Бенто">
+      <div class="top"><b>Sketch Vlada</b><nav><span>Курси</span><span>Роботи</span><span>Про Владу</span><span>Відгуки</span></nav><span class="btn">Обрати курс</span></div>
+      <div class="grid">
+        <div class="t main"><div><small>Онлайн-школа скетчингу</small><h4>Малюйте інтер'єри на iPad з нуля</h4></div><p>Від першої лінії до скетчів, за які платять дизайнери. Розстрочка і заморозка курсу.</p><span class="btn">Обрати курс →</span></div>
+        <div class="t photo"><span>Влада, архітекторка</span><img data-img="hero" alt=""></div>
+        <div class="t stat"><b>2000+</b><span>студентів пройшли навчання</span></div>
+        <div class="t work"><img data-img="nelya" alt=""><span>Неля, «Тіфані»</span></div>
+        <div class="t free"><b>Безкоштовні уроки зі зворотним зв'язком</b><i>→</i></div>
+        <div class="t tools"><span>Procreate</span><span>Infinite Painter</span><span>SketchUp</span><span>ArchiCAD</span></div>
+        <div class="t stat" style="background:#fff"><b>1000+</b><span>скетчів Влади на замовлення</span></div>
+      </div>
+    </div>
+    <div class="dir-info">
+      <div><h3>Шрифти</h3><p class="spec" style="font-family:Onest,sans-serif;font-weight:800">Onest<small>український шрифт, жирні заголовки і текст</small></p></div>
+      <div><h3>Кольори</h3><div class="chips"><i style="--c:#F7EDE8">#F7EDE8</i><i style="--c:#3F4A2E">#3F4A2E</i><i style="--c:#F2C9BE">#F2C9BE</i><i style="--c:#F6E3A1">#F6E3A1</i><i style="--c:#E9DCF2">#E9DCF2</i></div><p>Пудра, олива, вершки і трохи бузку.</p></div>
+      <div><h3>Фон і композиція</h3><p>Без ліній і текстур: колір дають самі плитки. Сітка з великих закруглених блоків, яка на телефоні складається у дві колонки.</p></div>
+      <div><h3>Головний прийом</h3><p>Плитки м'яко піднімаються при наведенні, стрілки повертаються. При скролі плитки з'являються по черзі.</p></div>
+    </div>
+  </section>
+  </section>
+
+  <nav class="strip" id="strip" aria-label="Палітри раунду 2"></nav>
+
+  <div id="boards" style="display:grid;gap:72px"></div>
+
+  <footer class="foot">
+    <p><b>Раунд 2.</b> № 9 і № 14 найближчі до Графіту, № 10 і № 12 тримають темний фон, але теплішають, № 11 і № 13 світлі, як Мока. Якщо подобається щось частково (наприклад, фон з одного варіанта, а кнопки з іншого), так і напишіть.</p>
+    <p><b>Раунд 1.</b> Перші дві палітри найменше змінюють впізнаваність: жовтий логотип працює без переробки. Третя і четверта зміщують бренд у бік інтер'єрного дизайну й потребують темної версії логотипа. П'ята найсміливіша, її варто брати, якщо школа хоче звучати молодше. Шоста, сьома і восьма додають градієнти та 3D: вони виглядають найдорожче, але потребують більше роботи і запасного варіанта для слабких телефонів.</p>
+    <p>Скажіть номер або назву, і я перенесу палітру в <code>tokens.css</code> сайту.</p>
+  </footer>
+</main>
+
+<script src="img.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Palette data. Roles map 1:1 onto tokens the site already uses (canvas, panel, line, text, accent...).
+const P = [
+  {
+    id:'current', n:'0', name:'Зараз: нічний бірюзовий', short:'Поточна', current:true,
+    mood:'Те, що на сайті зараз, для порівняння. Глибокий бірюзовий фон, жовтий акцент, блакитні лінії.',
+    c:{bg:'#04191F',surface:'#082A33',line:'#15505E',text:'#EEF5F6',body:'#C9D6DA',accent:'#FFC43B',on:'#04191F',second:'#5CC6DC',on2:'#04191F',hl:'#FFC43B',price:'#FFC43B',logo2:'#FFC43B',persp:'#5CC6DC'},
+    names:{bg:'Canvas',surface:'Panel',line:'Line',text:'Text',accent:'Accent',second:'Cyan'},
+    why:[], care:[]
+  },
+  {
+    id:'graphite', n:'1', name:'Графіт і жовтий маркер', short:'Графіт', pick:'Найбезпечніша',
+    mood:'Еволюція поточного стилю. Бірюза йде, лишається нейтральний графіт, як матовий екран iPad, і жовтий, як маркер. Роботи студентів на такому фоні виглядають яскравіше.',
+    c:{bg:'#15171B',surface:'#1F2227',line:'#353A43',text:'#F4F2EC',body:'#C2C4C8',accent:'#FFCF3F',on:'#15171B',second:'#9CC8FF',on2:'#15171B',hl:'#FFCF3F',price:'#FFCF3F',logo2:'#FFCF3F',persp:'#9CC8FF'},
+    names:{bg:'Графіт',surface:'Панель',line:'Лінія',text:'Текст',accent:'Маркер',second:'Небо'},
+    why:['Логотип і всі жовті елементи працюють без змін','Нейтральний фон не сперечається з кольорами скетчів','Темна тема виглядає преміально, як професійний софт'],
+    care:['Найменша зміна: хтось може не помітити ребрендинг']
+  },
+  {
+    id:'paper', n:'2', name:'Альбом і синій олівець', short:'Альбом', pick:'Найближча до скетчингу',
+    mood:'Світлий сайт як сторінка скетчбука: теплувато-сірий папір, графітовий текст, кобальтові будівельні лінії перспективи і жовтий акцент, як виділення текстовиділювачем.',
+    c:{bg:'#F3F2EE',surface:'#FFFFFF',line:'#D9D8D1',text:'#1D2029',body:'#4A4E58',accent:'#2F4BE8',on:'#FFFFFF',second:'#2F4BE8',on2:'#FFFFFF',hl:'#2F4BE8',price:'#1D2029',logo2:'#E2A900',persp:'#2F4BE8'},
+    names:{bg:'Папір',surface:'Аркуш',line:'Лінія',text:'Графіт',accent:'Кобальт',second:'Олівець'},
+    why:['Світлий фон легше читати новачкам, сайт виглядає дружнім','Сині перспективні лінії, як у креслярському скетчингу','Добре друкується і переноситься в соцмережі'],
+    care:['Потрібна темна версія логотипа (жовтий на білому слабкий)','Жовтий лишається тільки для дрібних акцентів']
+  },
+  {
+    id:'mocha', n:'3', name:'Мока і шавлія', short:'Мока', pick:'Для дизайнерок інтер’єру',
+    mood:'Мова сучасного інтер’єру: світла штукатурка, мока (колір Pantone 2025), еспресо замість чорного і приглушена шавлія. Те, що дизайнерки бачать у мудбордах щодня.',
+    c:{bg:'#EEE8E1',surface:'#F8F4EF',line:'#D8CEC3',text:'#2B211C',body:'#5A4C44',accent:'#2B211C',on:'#F8F4EF',second:'#7E9478',on2:'#FFFFFF',hl:'#A0705A',price:'#A0705A',logo2:'#A0705A',persp:'#A47864'},
+    names:{bg:'Штукатурка',surface:'Льон',line:'Шов',text:'Еспресо',accent:'Кнопка',second:'Шавлія',hl:'Мока'},
+    show:['bg','surface','line','text','hl','second'],
+    why:['Говорить мовою аудиторії: так виглядають сучасні інтер’єри','Тепла, спокійна, «доросла» гамма підвищує сприйняту ціну курсів','Фото Влади і теплі рендери студентів лягають природно'],
+    care:['Потрібна темна версія логотипа','Мока недостатньо контрастна для дрібного тексту, тому кнопки кольору еспресо']
+  },
+  {
+    id:'blueprint', n:'4', name:'Креслення і персик', short:'Креслення', pick:'Архітектурне коріння',
+    mood:'Глибокий чорнильно-синій, як калька креслення, світлі лінії перспективи і теплий персиковий акцент. Нагадує, що Влада архітекторка, але без холоду.',
+    c:{bg:'#0F1A33',surface:'#16244A',line:'#2C3E6E',text:'#F5F0EA',body:'#C3C8D6',accent:'#FFAE85',on:'#0F1A33',second:'#7FA2FF',on2:'#0F1A33',hl:'#FFAE85',price:'#FFAE85',logo2:'#FFAE85',persp:'#7FA2FF'},
+    names:{bg:'Чорнило',surface:'Калька',line:'Лінія',text:'Папір',accent:'Персик',second:'Креслення'},
+    why:['Пов’язує школу з архітектурою й точністю','Персик теплий і жіночний, але не «рожевий»','Темна тема зберігає настрій поточного сайту'],
+    care:['Жовтий логотип варто перефарбувати в персик або білий']
+  },
+  {
+    id:'lilac', n:'5', name:'Бузок і лайм', short:'Бузок', pick:'Найсміливіша',
+    mood:'Мова креаторів і Procreate-спільноти: світлий бузковий фон, глибокий фіолетовий текст, фіолетові кнопки і лаймові виділення. Молодо, енергійно, помітно в стрічці.',
+    c:{bg:'#EEEAFB',surface:'#FFFFFF',line:'#D6CFF2',text:'#1C1433',body:'#4B4364',accent:'#5B3FF0',on:'#FFFFFF',second:'#D2F05A',on2:'#1C1433',hl:'#5B3FF0',price:'#1C1433',logo2:'#5B3FF0',persp:'#5B3FF0'},
+    names:{bg:'Бузок',surface:'Аркуш',line:'Лінія',text:'Слива',accent:'Фіолет',second:'Лайм'},
+    why:['Найсучасніше звучання, схоже на улюблені креативні застосунки','Лайм дає емоцію «вийшло!» для марафонів і акцій','Виділяється серед інших шкіл малювання'],
+    care:['Може здатися надто «молодіжною» для дорогих PRO-курсів','Логотип повністю перефарбовується']
+  },
+  {
+    id:'aurora', n:'6', name:'Аврора і скляна кімната', short:'Аврора', pick:'Підпис Влади в 3D', scene:'room', note:'від лінії до кольору',
+    mood:'Нічне небо з м’якими переливами фіолетового, рожевого і персикового. У першому екрані живе 3D-кімната: спершу тонкі лінії, потім вона заливається кольором. Це та сама перспектива з сайту, тільки об’ємна. Поверніть її курсором.',
+    grad:['#5B4BFF','#FF6FB5','#FFB27A'], tgrad:['#9C8CFF','#FF8FC8','#FFC59A'],
+    c:{bg:'#0A0A1F',surface:'#17173A',line:'#2E2E5E',text:'#F6F2FF',body:'#C9C4E6',accent:'#FFB27A',on:'#0A0A1F',second:'#8F7CFF',on2:'#0A0A1F',hl:'#FF8FC8',price:'#FFB27A',logo2:'#FFB27A',persp:'#8F7CFF'},
+    names:{bg:'Ніч',surface:'Скло',text:'Світло',accent:'Персик',second:'Фіалка',grad:'Аврора'},
+    show:['bg','surface','text','accent','second','grad'],
+    why:['3D-кімната показує суть школи: з ліній народжується інтер’єр','Переливи й скляні картки зараз асоціюються з дорогими продуктами','Темна основа зберігає нічний характер поточного сайту'],
+    care:['Three.js додає ~150 КБ і потребує версії без 3D для слабких телефонів','Логотип краще зробити білим або персиковим']
+  },
+  {
+    id:'pearl', n:'7', name:'Перламутрова крапля', short:'Перламутр', pick:'Бʼюті-преміум', scene:'blob', note:'крапля фарби', light:true,
+    mood:'Світлий перламутровий фон і жива 3D-крапля фарби, що переливається рожевим, бузковим і м’ятним. Як у косметичних брендів: ніжно, жіночно і дорого. Текст глибокий сливовий.',
+    grad:['#FF8AC8','#B69CFF','#7FE0C8'], tgrad:['#D6409F','#7B5CF0','#1E9C7E'],
+    c:{bg:'#F5F2FA',surface:'#FFFFFF',line:'#E2DCEF',text:'#241B35',body:'#5B5170',accent:'#241B35',on:'#FFFFFF',second:'#7FE0C8',on2:'#241B35',hl:'#7B5CF0',price:'#241B35',logo2:'#D6409F',persp:'#B69CFF'},
+    names:{bg:'Перли',surface:'Аркуш',text:'Слива',accent:'Кнопка',second:'М’ята',grad:'Перламутр'},
+    show:['bg','surface','text','accent','second','grad'],
+    why:['Найжіночніша з усіх, але без банальної рожевості','Крапля фарби пов’язана з малюванням, а не просто декор','Світлий фон робить сайт легким і дружнім для новачків'],
+    care:['Яскраві роботи студентів на перламутрі треба подавати в рамках','Потрібна темна версія логотипа']
+  },
+  {
+    id:'golden', n:'8', name:'Золота година', short:'Золото', pick:'Продукт у кадрі', scene:'ipad', note:'ваш перший скетч',
+    mood:'Теплий захід сонця на темному еспресо: від коралового до медового. У кадрі 3D-iPad зі стилусом, на екрані скетч сам заливається кольором. Головний інструмент курсу стає героєм першого екрана.',
+    grad:['#FF5A3C','#FF9A55','#FFD27A'], tgrad:['#FF7A55','#FFA866','#FFD98A'],
+    c:{bg:'#140E0B',surface:'#221813',line:'#3A2A21',text:'#FFF4E8',body:'#D9C6B6',accent:'#FF8A4C',on:'#140E0B',second:'#FFD27A',on2:'#140E0B',hl:'#FFA866',price:'#FFD27A',logo2:'#FFD27A',persp:'#FF9A55'},
+    names:{bg:'Еспресо',surface:'Шкіра',text:'Вершки',accent:'Корал',second:'Мед',grad:'Захід'},
+    show:['bg','surface','text','accent','second','grad'],
+    why:['iPad і стилус одразу пояснюють, чого тут навчають','Тепле світло, як на рендерах інтер’єрів, і пасує до фото Влади','Жовтий логотип природно вписується в медовий акцент'],
+    care:['3D-модель iPad варто замовити або купити якіснішу, ніж у макеті','Three.js потребує запасного статичного варіанта для мобільних']
+  },
+  // ---- Round 2: variations between Graphite (1) and Mocha (3) ----
+  {
+    id:'warmgraphite', n:'9', round:2, name:'Теплий графіт', short:'Теплий графіт', pick:'Графіт + мока',
+    mood:'Графіт, але тепліший, з коричневим підтоном, як мокрий вугільний олівець. Жовтий маркер і логотип лишаються, а другим кольором стає мока замість холодного блакитного.',
+    c:{bg:'#1A1816',surface:'#25221F',line:'#3B3631',text:'#F5F0E9',body:'#C9C0B6',accent:'#FFCF3F',on:'#1A1816',second:'#B88F76',on2:'#1A1816',hl:'#FFCF3F',price:'#FFCF3F',logo2:'#FFCF3F',persp:'#B88F76'},
+    names:{bg:'Вугілля',surface:'Панель',line:'Лінія',text:'Вершки',accent:'Маркер',second:'Мока'},
+    why:['Найменше змін від Графіту, але атмосфера стає затишною, «інтер’єрною»','Жовтий логотип працює без переробки','Мока в тегах і лініях м’яко з’єднує дві обрані палітри'],
+    care:['Жовтий і мока разом треба дозувати: жовтий тільки для дій']
+  },
+  {
+    id:'espresso', n:'10', round:2, name:'Еспресо і латте', short:'Еспресо', pick:'Темна мока',
+    mood:'Мока в темній версії: глибокий кавовий фон, вершковий текст, кнопки кольору латте і шавлія для дрібних акцентів. Як вечірнє світло в гарному ресторані.',
+    c:{bg:'#1E1714',surface:'#2A201C',line:'#45362F',text:'#F4EBE2',body:'#CDBFB3',accent:'#DDAA88',on:'#1E1714',second:'#A3B79B',on2:'#1E1714',hl:'#DDAA88',price:'#DDAA88',logo2:'#DDAA88',persp:'#DDAA88'},
+    names:{bg:'Еспресо',surface:'Кава',line:'Шов',text:'Вершки',accent:'Латте',second:'Шавлія'},
+    why:['Тепла палітра Моки, але темна основа Графіту','Виглядає дорого і спокійно, без яскравих кольорів','Теплі рендери студентів на такому фоні світяться'],
+    care:['Логотип краще перефарбувати в латте або вершковий','Потрібно стежити, щоб сайт не став надто «коричневим»: більше повітря і світлих фото']
+  },
+  {
+    id:'plastermarker', n:'11', round:2, name:'Штукатурка і маркер', short:'Штукатурка', pick:'Мока + жовтий', mark:true,
+    mood:'Світла тепла штукатурка з Моки, графітовий текст і жовтий маркер, яким підкреслюють головне, як у скетчбуку. Поєднує теплоту Моки і впізнаваний жовтий Графіту.',
+    c:{bg:'#EFE9E2',surface:'#F9F6F2',line:'#DDD3C8',text:'#1F1B18',body:'#57504A',accent:'#1F1B18',on:'#F9F6F2',second:'#FFCF3F',on2:'#1F1B18',hl:'#1F1B18',price:'#1F1B18',logo2:'#E0A800',persp:'#B88F76',kick:'#8A6450'},
+    names:{bg:'Штукатурка',surface:'Аркуш',line:'Шов',text:'Графіт',accent:'Кнопка',second:'Маркер'},
+    why:['Жовтий зберігається як фірмовий знак, але в ролі виділення','Світла і дружня для новачків, тепла для дизайнерок','Прийом «підкреслення маркером» прямо з практики скетчингу'],
+    care:['Логотип потребує темної версії з жовтим акцентом','Жовтий не можна ставити текстом на світлий фон, тільки підкладкою']
+  },
+  {
+    id:'sage', n:'12', round:2, name:'Графіт і шавлія', short:'Шавлія', pick:'Спокійна',
+    mood:'Графіт із ледь зеленим підтоном, світло-шавлієві кнопки і теплий латте. Зелень, як живі рослини в інтер’єрі: свіжо, натурально, без кричущих кольорів.',
+    c:{bg:'#171A19',surface:'#212524',line:'#363C3A',text:'#EEF0EA',body:'#BFC5BE',accent:'#B9CDA8',on:'#171A19',second:'#E3B98F',on2:'#171A19',hl:'#B9CDA8',price:'#E3B98F',logo2:'#B9CDA8',persp:'#B9CDA8'},
+    names:{bg:'Графіт',surface:'Панель',line:'Лінія',text:'Папір',accent:'Шавлія',second:'Латте'},
+    why:['Темна основа Графіту і натуральні кольори Моки','Шавлія асоціюється зі спокоєм і «зеленим» інтер’єром','Відрізняється від інших шкіл, де переважають жовті та рожеві'],
+    care:['Жовтий логотип тут зайвий, краще світлий або шавлієвий']
+  },
+  {
+    id:'travertine', n:'13', round:2, name:'Травертин і олива', short:'Травертин', pick:'Світла преміальна',
+    mood:'Світлий камінь травертин, майже чорний текст, оливкова зелень і глибокий горіховий акцент. Холодніша і контрастніша за Моку, як мармур і дерево в дорогому проєкті.',
+    c:{bg:'#E9E4DB',surface:'#F5F2EC',line:'#D3CBBE',text:'#2A2622',body:'#5C554D',accent:'#2A2622',on:'#F5F2EC',second:'#8C9A7B',on2:'#FFFFFF',hl:'#8A5E46',price:'#8A5E46',logo2:'#8A5E46',persp:'#8A5E46'},
+    names:{bg:'Травертин',surface:'Камінь',line:'Шов',text:'Вугілля',accent:'Кнопка',second:'Олива',hl:'Горіх'},
+    show:['bg','surface','line','text','hl','second'],
+    why:['Найбільш «дизайнерська» з світлих: чисто, дорого, контрастно','Горіховий акцент читається краще за моку','Фото Влади на світлому камені виглядає як у журналі'],
+    care:['Потрібна темна версія логотипа','Мало яскравості: кольорові акції краще подавати фотографіями робіт']
+  },
+  {
+    id:'mochagraphite', n:'14', round:2, name:'Мока на графіті', short:'Мока на графіті', pick:'Обидва в одному',
+    mood:'Холодний графіт Графіту як основа і тепла мока як головний колір кнопок і виділень, плюс вершковий для дрібниць. Найпряміше поєднання двох обраних палітр.',
+    c:{bg:'#161718',surface:'#202224',line:'#36393D',text:'#F2EEE9',body:'#C4C2BF',accent:'#C99D82',on:'#161718',second:'#EADBC9',on2:'#161718',hl:'#C99D82',price:'#C99D82',logo2:'#C99D82',persp:'#C99D82'},
+    names:{bg:'Графіт',surface:'Панель',line:'Лінія',text:'Папір',accent:'Мока',second:'Вершки'},
+    why:['Буквально Графіт і Мока разом','Мока на холодному фоні виглядає дорожче, ніж на теплому','Стримано і елегантно, підходить для дорогих PRO-курсів'],
+    care:['Логотип перефарбовується в моку або білий','Менше енергії, ніж з жовтим: акції варто виділяти іншими прийомами']
+  }
+];
+
+// ---- WCAG contrast ----
+const lum = hex => { const v=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4)); return .2126*v[0]+.7152*v[1]+.0722*v[2]; };
+const ratio = (a,b) => { const [x,y]=[lum(a),lum(b)].sort((p,q)=>q-p); return (x+.05)/(y+.05); };
+
+// ---- perspective room lines (the site's signature), drawn per palette ----
+function room(w,h,vx,vy,col,dense){
+  const out=[]; const n=dense?18:12;
+  for(let i=0;i<=n;i++){ const px=-w*.4+w*1.8*i/n; out.push(`<line x1="${px.toFixed(1)}" y1="${h}" x2="${vx}" y2="${vy}"/>`); if(i%2===0) out.push(`<line x1="${px.toFixed(1)}" y1="0" x2="${vx}" y2="${vy}"/>`); }
+  const bw=w*.22,bh=h*.3; const bx=vx-bw/2, by=vy-bh*.45;
+  return `<g stroke="${col}" stroke-width="1" opacity=".22" fill="none">${out.join('')}</g>
+  <rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="none" stroke="${col}" stroke-opacity=".5"/>
+  <g stroke="${col}" stroke-opacity=".55" fill="none"><line x1="0" y1="0" x2="${bx}" y2="${by}"/><line x1="${w}" y1="0" x2="${bx+bw}" y2="${by}"/><line x1="${w}" y1="${h}" x2="${bx+bw}" y2="${by+bh}"/><line x1="0" y1="${h}" x2="${bx}" y2="${by+bh}"/></g>`;
+}
+// a tiny "sketch" of a living room in line art, built from simple shapes
+function sketch(c){
+  const W=400,H=300,vx=210,vy=118;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  ${room(W,H,vx,vy,c.persp,false)}
+  <g fill="none" stroke="${c.text}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+    <path d="M118 212 L118 182 Q118 172 128 172 L262 172 Q272 172 272 182 L272 212"/>
+    <path d="M104 214 L286 214 L286 236 L104 236 Z"/>
+    <path d="M140 172 L140 160 Q140 152 148 152 L188 152 Q196 152 196 160 L196 172 M200 172 L200 160 Q200 152 208 152 L244 152 Q252 152 252 160 L252 172"/>
+    <path d="M112 236 L112 246 M278 236 L278 246"/>
+    <path d="M298 92 L298 226 M286 226 L310 226"/><path d="M286 92 L310 92 L304 76 L292 76 Z"/>
+    <path d="M60 60 L60 150 L96 140 L96 70 Z"/>
+  </g>
+  <g fill="${c.hl}" opacity=".85"><circle cx="160" cy="164" r="5"/></g>
+  <path d="M140 258 C190 250 250 252 300 262" fill="none" stroke="${c.hl}" stroke-width="2.4" stroke-linecap="round"/>
+  <g stroke="${c.hl}" stroke-width="1.4" fill="none"><circle cx="${vx}" cy="${vy}" r="5"/><path d="M${vx-11} ${vy}H${vx+11}M${vx} ${vy-11}V${vy+11}"/></g>
+</svg>`;
+}
+
+function mock(p){
+  const c=p.c, is3d=!!p.scene;
+  const v={bg:c.bg,surface:c.surface,line:c.line,text:c.text,body:c.body,accent:c.accent,on:c.on,second:c.second,on2:c.on2,hl:c.hl,price:c.price,'logo2':c.logo2,kick:c.kick||c.second};
+  if(p.grad){[v.g1,v.g2,v.g3]=p.grad;[v.t1,v.t2,v.t3]=p.tgrad;}
+  const vars=Object.entries(v).map(([k,x])=>`--m-${k}:${x}`).join(';');
+  const bg = is3d ? `<div class="m-aura" aria-hidden="true"></div>` : `<svg class="persp" viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${room(800,520,300,150,c.persp,true)}</svg>`;
+  const visual = is3d ? `<div class="m-3d"><canvas data-scene="${p.scene}" aria-hidden="true"></canvas><span class="m-note">${p.note}</span></div>` : `<div class="m-sketch">${sketch(c)}<span class="m-note">точка сходу</span></div>`;
+  return `<div class="mock${is3d?' is-3d':''}${p.light?' is-light':''}" style="${vars}" role="img" aria-label="Макет першого екрана сайту в палітрі «${p.name}»">
+    ${bg}
+    <div class="m-nav"><span class="m-logo">Sketch <em>Vlada</em></span>
+      <span class="m-links"><span>Курси</span><span>Як навчаємо</span><span>Роботи</span><span>Відгуки</span></span>
+      <span class="m-btn">Обрати курс</span></div>
+    <div class="m-hero">
+      <div>
+        <span class="m-kicker">Владислава Бондаренко</span>
+        <div class="m-h1"><small>Онлайн-школа</small><b>скетчингу</b><b>і <em${p.grad?' class="grad"':p.mark?' class="mark"':''}>моделювання</em></b><b>інтер'єрів</b></div>
+        <p class="m-lede">Навчу малювати інтер'єри на iPad, навіть якщо ви ніколи не малювали.</p>
+        <div class="m-cta"><span class="m-btn m-btn--lg">Обрати курс →</span><span class="m-ghost">Відео про школу</span></div>
+      </div>
+      <div class="m-visual">
+        ${visual}
+        <div class="m-card"><div class="m-tags"><span class="m-tag">iPad</span><span class="m-tag m-tag--en">EN</span></div>
+          <span class="t">Інтер'єрний скетчинг. Від новачка до профі</span>
+          <div class="row"><span class="m-badge">Набір відкрито</span><span class="m-price">$449</span></div></div>
+      </div>
+    </div>
+    <div class="m-chips"><span class="m-chip on">Усі курси</span><span class="m-chip">Хочу спробувати</span><span class="m-chip">Хочу заробляти</span><span class="m-chip">Моделювання</span></div>
+  </div>`;
+}
+
+const roleText = {bg:'фон сторінки',surface:'картки, панелі',line:'рамки, лінії',text:'заголовки й основний текст',accent:'кнопки й головні дії',second:'другорядний акцент, теги',hl:'виділення в заголовку, ціни',grad:'переливи фону, 3D-світло, виділення'};
+
+function board(p){
+  const c=p.c; const keys=p.show||['bg','surface','line','text','accent','second'];
+  const sw=keys.map(k=>{
+    if(k==='grad'){ const css=`linear-gradient(90deg, ${p.grad.join(', ')})`;
+      return `<button class="sw" type="button" data-hex="${css}" aria-label="Скопіювати градієнт"><i style="background:${css}"></i><span><b>${p.names.grad}</b><small>${roleText.grad}</small></span><code class="g">${p.grad.join('<br>')}</code></button>`; }
+    return `<button class="sw" type="button" data-hex="${c[k]}" aria-label="Скопіювати ${c[k]}"><i style="background:${c[k]}"></i><span><b>${(p.names&&p.names[k])||k}</b><small>${roleText[k]}</small></span><code>${c[k]}</code></button>`;
+  }).join('');
+  const checks=[['Текст / фон',c.text,c.bg],['Основний текст / фон',c.body,c.bg],['Кнопка',c.on,c.accent],['Акцент / фон',c.hl,c.bg]].map(([l,f,b])=>{const r=ratio(f,b);const cls=r>=4.5?'ok':r>=3?'big':'';return `<span class="${cls}" title="${f} на ${b}">${l} ${r.toFixed(1)}:1</span>`}).join('');
+  const notes = p.current ? '' : `<div class="notes">
+      <div><h3>Чому підходить Владі</h3><ul>${p.why.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h3>На що зважити</h3><ul>${p.care.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h3>Контраст</h3><div class="contrast">${checks}</div></div></div>`;
+  return `<section class="board" id="p-${p.id}" aria-labelledby="h-${p.id}">
+    <div class="board__head"><div><p class="eyebrow">${p.current?'Для порівняння':'Палітра '+p.n}</p><h2 id="h-${p.id}">${p.name}</h2></div>${p.pick?`<span class="pick">${p.pick}</span>`:''}<p class="mood">${p.mood}</p></div>
+    <div class="board__body">${mock(p)}<div><div class="swatches">${sw}</div>${notes}</div></div>
+  </section>`;
+}
+
+// overview strip
+// overview: the two palettes Vlada picked in round 1, then round 2
+const chosenIds=['graphite','mocha'];
+const stripItems=[...chosenIds.map(id=>P.find(p=>p.id===id)), ...P.filter(p=>p.round===2)];
+document.getElementById('strip').innerHTML = stripItems.map(p=>{
+  const chosen=chosenIds.includes(p.id);
+  const k=['bg','surface','text','accent','second'];
+  const wts=[34,16,14,22,14];
+  const bars = p.grad
+    ? `<i style="flex:40;background:${p.c.bg}"></i><i style="flex:60;background:linear-gradient(160deg,${p.grad.join(',')})"></i>`
+    : k.map((x,i)=>`<i style="flex:${wts[i]};background:${p.c[x==='accent'&&p.id==='mocha'?'hl':x]}"></i>`).join('');
+  return `<a href="#p-${p.id}" class="${chosen?'chosen':''}"><span class="bars">${bars}</span><span>${chosen?'Обрано · № '+p.n:'№ '+p.n}</span><b>${p.short}</b></a>`;
+}).join('');
+// boards: flat palettes, then the gradient + 3D group, current last as the reference
+const groupHead = `<div class="group"><p class="eyebrow">Палітри 6–8</p><h2>Градієнти і живе 3D</h2>
+  <p>Тут перший екран не просто кольоровий: м’які переливи на фоні, скляні картки і 3D-сцена на Three.js, яка реагує на курсор. Сцени показують те, про що школа: кімнату в перспективі, фарбу і iPad. Поводіть мишкою над макетами.</p></div>`;
+const round2Head = `<div class="group"><p class="eyebrow">Раунд 2 · палітри 9–14</p><h2>Варіації між Графітом і Мокою</h2>
+  <p>Спершу ті, що ближчі до темного Графіту, потім світлі, ближчі до Моки. Номери продовжують перший раунд, щоб було легко відповідати.</p></div>`;
+const round1Head = `<div class="group"><p class="eyebrow">Раунд 1 · палітри 1–8</p><h2>Перший раунд</h2>
+  <p>Для порівняння: усі варіанти, які Влада вже бачила. Графіт (№ 1) і Мока (№ 3) тут теж є.</p></div>`;
+document.getElementById('boards').innerHTML =
+  round2Head + P.filter(p=>p.round===2).map(board).join('') + round1Head +
+  P.filter(p=>!p.current&&!p.scene&&!p.round).map(board).join('') + groupHead +
+  P.filter(p=>p.scene).map(board).join('') + board(P[0]);
+
+// copy HEX on click (falls back to selecting the code text)
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.sw'); if(!b) return;
+  const hex=b.dataset.hex;
+  const done=()=>{b.classList.add('copied');setTimeout(()=>b.classList.remove('copied'),1200)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(b.querySelector('code'));const s=getSelection();s.removeAllRanges();s.addRange(r)};
+  try{navigator.clipboard.writeText(hex).then(done,fallback)}catch(_){fallback()}
+});
+
+// ---------- Three.js scenes for palettes 6–8 ----------
+const sm=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};
+const SCENES={
+  // Wireframe interior that fills with colour: the site's "from line to sketch" idea in 3D
+  room(scene,cam,p){
+    const T=THREE, bgc=new T.Color(p.c.bg), [g1,g2,g3]=p.grad.map(h=>new T.Color(h));
+    cam.position.set(0,1.4,8.6); cam.lookAt(0,-.15,0);
+    const root=new T.Group(); scene.add(root);
+    const lineMat=new T.LineBasicMaterial({color:new T.Color(p.c.text),transparent:true,opacity:.8});
+    const fills=[];
+    const add=(geo,pos,col)=>{
+      const m=new T.Mesh(geo,new T.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.22,roughness:.4,metalness:.1,transparent:true,opacity:0}));
+      const e=new T.LineSegments(new T.EdgesGeometry(geo),lineMat);
+      const g=new T.Group(); g.add(m,e); g.position.set(...pos); root.add(g); fills.push(m);
+    };
+    const B=(x,y,z)=>new T.BoxGeometry(x,y,z), C=(a,b,h,s)=>new T.CylinderGeometry(a,b,h,s);
+    add(B(4.4,.04,3.6),[0,-1,0],g1.clone().lerp(bgc,.55));          // floor
+    add(B(4.4,2.8,.04),[0,.4,-1.8],g1.clone().lerp(bgc,.3));         // back wall
+    add(B(.04,2.8,3.6),[-2.2,.4,0],g2.clone().lerp(bgc,.4));         // side wall
+    add(B(1.2,1.1,.06),[1,.75,-1.76],g3);                            // window
+    add(B(2.4,.02,1.6),[-.2,-.97,-.2],g2.clone().lerp(bgc,.2));      // rug
+    add(B(2,.36,.8),[-.3,-.78,-1.15],g2);                            // sofa seat
+    add(B(2,.6,.18),[-.3,-.45,-1.5],g2);                             // sofa back
+    add(B(.18,.5,.8),[-1.36,-.7,-1.15],g2); add(B(.18,.5,.8),[.76,-.7,-1.15],g2);
+    add(C(.5,.5,.06,32),[-.2,-.62,-.1],g3); add(C(.05,.05,.36,12),[-.2,-.82,-.1],g3); // table
+    add(C(.03,.03,1.7,8),[1.5,-.15,-1.2],g1); add(new T.ConeGeometry(.28,.34,24,1,true),[1.5,.82,-1.2],g3); // lamp
+    add(C(.2,.16,.4,16),[-1.75,-.8,.6],g1); add(new T.IcosahedronGeometry(.36,1),[-1.75,-.3,.6],g2); // plant
+    scene.add(new T.AmbientLight(0xffffff,.6));
+    const l1=new T.PointLight(g2,1.5,14); l1.position.set(2.6,2.6,3); scene.add(l1);
+    const l2=new T.PointLight(g1,1.3,14); l2.position.set(-3,1.2,2.2); scene.add(l2);
+    return {update(t,ptr){
+      const k=(t%9)/9, f=sm(.12,.45,k)*(1-sm(.84,.98,k));
+      fills.forEach((m,i)=>{m.material.opacity=Math.max(0,Math.min(.9,f*1.25-i*.015))});
+      lineMat.opacity=.85-f*.4;
+      root.rotation.y=-.55+Math.sin(t*.25)*.12+ptr.x*.7; root.rotation.x=ptr.y*.2;
+    }};
+  },
+  // Iridescent paint drop: displaced sphere with a view-dependent pearl shader
+  blob(scene,cam,p){
+    const T=THREE; cam.position.set(0,0,5.4);
+    const [c1,c2,c3]=p.grad.map(h=>new T.Color(h));
+    const disp=`float d(vec3 p,float t){return sin(p.x*2.6+t*.9)*sin(p.y*3.1+t*1.1)*sin(p.z*2.2+t*.7)*.22+sin(p.y*4.+t*1.3)*.05;}`;
+    const mat=new T.ShaderMaterial({
+      uniforms:{t:{value:0},c1:{value:c1},c2:{value:c2},c3:{value:c3},ink:{value:new T.Color(p.c.text)}},
+      vertexShader:`uniform float t;varying vec3 vN;varying vec3 vV;varying float vD;${disp}
+        vec3 dp(vec3 q){return q+normalize(q)*d(q,t);}
+        void main(){vec3 p0=position;vec3 n=normalize(normal);vec3 p=dp(p0);vD=d(p0,t);
+          vec3 tn=normalize(cross(n,abs(n.y)>.99?vec3(1.,0.,0.):vec3(0.,1.,0.)));vec3 bn=cross(n,tn);
+          vec3 nn=normalize(cross(dp(p0+tn*.01)-p,dp(p0+bn*.01)-p));if(dot(nn,n)<0.)nn=-nn;
+          vN=normalize(normalMatrix*nn);vec4 mv=modelViewMatrix*vec4(p,1.);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
+      fragmentShader:`uniform vec3 c1;uniform vec3 c2;uniform vec3 c3;uniform vec3 ink;uniform float t;varying vec3 vN;varying vec3 vV;varying float vD;
+        void main(){vec3 n=normalize(vN);float fr=pow(1.-max(dot(n,vV),0.),2.);
+          float h=.5+.5*sin(dot(n,vec3(1.6,2.2,.8))*1.9+t*.5+vD*7.);
+          vec3 col=mix(c1,c2,smoothstep(0.,.6,h));col=mix(col,c3,smoothstep(.45,1.,h));
+          col=mix(col,vec3(1.),fr*.6);vec3 L=normalize(vec3(.4,.8,.6));
+          col+=pow(max(dot(reflect(-L,n),vV),0.),36.)*.55;col=mix(col,ink,(1.-fr)*.05);
+          gl_FragColor=vec4(col,1.);}`
+    });
+    const blob=new T.Mesh(new T.SphereGeometry(1.3,160,160),mat); scene.add(blob);
+    const drops=[.26,.17,.12].map((s,i)=>{const m=new T.Mesh(new T.SphereGeometry(1,48,48),mat);m.scale.setScalar(s);scene.add(m);return m});
+    return {update(t,ptr){
+      mat.uniforms.t.value=t;
+      blob.rotation.y=t*.15+ptr.x*.9; blob.rotation.x=ptr.y*.6;
+      drops.forEach((m,i)=>{const a=t*(.35+i*.12)+i*2.1;m.position.set(Math.cos(a)*(1.9+i*.2),Math.sin(a*1.3)*.9,Math.sin(a)*.8)});
+    }};
+  },
+  // Floating iPad + stylus; the sketch on screen fills with colour in a sweep
+  ipad(scene,cam,p){
+    const T=THREE; cam.position.set(0,0,6.4);
+    const [g1,g2,g3]=p.grad.map(h=>new T.Color(h));
+    const w=2.5,h=3.3,r=.24,s=new T.Shape();
+    s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);s.lineTo(w/2,h/2-r);s.quadraticCurveTo(w/2,h/2,w/2-r,h/2);
+    s.lineTo(-w/2+r,h/2);s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);s.lineTo(-w/2,-h/2+r);s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);
+    const geo=new T.ExtrudeGeometry(s,{depth:.1,bevelEnabled:true,bevelThickness:.04,bevelSize:.04,bevelSegments:4,curveSegments:12}); geo.center();
+    const body=new T.Mesh(geo,new T.MeshStandardMaterial({color:0x2b221d,metalness:.75,roughness:.3}));
+    // screen: line art + colour version, composited with a moving sweep
+    const W=480,H=640, base=document.createElement('canvas'), col=document.createElement('canvas'), out=document.createElement('canvas');
+    [base,col,out].forEach(c=>{c.width=W;c.height=H});
+    const draw=(ctx,fill)=>{
+      ctx.fillStyle='#FFF8F0';ctx.fillRect(0,0,W,H);
+      const vx=W*.52,vy=H*.38;
+      if(fill){const gr=ctx.createLinearGradient(0,0,0,H);gr.addColorStop(0,p.grad[2]+'55');gr.addColorStop(1,p.grad[0]+'33');ctx.fillStyle=gr;ctx.fillRect(0,0,W,H*.62);
+        ctx.fillStyle=p.grad[1]+'40';ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(W*.32,H*.62);ctx.lineTo(W*.72,H*.62);ctx.lineTo(W,H);ctx.fill();}
+      ctx.strokeStyle='rgba(60,40,30,.18)';ctx.lineWidth=1;
+      for(let i=0;i<=14;i++){const x=-W*.3+W*1.6*i/14;ctx.beginPath();ctx.moveTo(x,H);ctx.lineTo(vx,vy);ctx.stroke();}
+      ctx.strokeStyle='#3A2A21';ctx.lineWidth=2.2;ctx.lineJoin='round';ctx.lineCap='round';
+      ctx.strokeRect(W*.32,H*.24,W*.4,H*.38);
+      [[0,0,W*.32,H*.24],[W,0,W*.72,H*.24],[0,H,W*.32,H*.62],[W,H,W*.72,H*.62]].forEach(([a,b,c,d])=>{ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.stroke()});
+      if(fill){ctx.fillStyle=p.grad[0];ctx.fillRect(W*.2,H*.66,W*.6,H*.09);ctx.fillStyle=p.grad[1];ctx.fillRect(W*.22,H*.58,W*.56,H*.08);}
+      ctx.strokeRect(W*.2,H*.66,W*.6,H*.09);ctx.strokeRect(W*.22,H*.58,W*.56,H*.08);
+      if(fill){ctx.fillStyle=p.grad[2];ctx.fillRect(W*.5,H*.29,W*.16,H*.15);}
+      ctx.strokeRect(W*.5,H*.29,W*.16,H*.15);
+      ctx.beginPath();ctx.ellipse(W*.5,H*.84,W*.14,H*.025,0,0,7);if(fill){ctx.fillStyle=p.grad[2];ctx.fill();}ctx.stroke();
+      ctx.beginPath();ctx.moveTo(W*.82,H*.78);ctx.lineTo(W*.82,H*.4);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(W*.74,H*.4);ctx.lineTo(W*.9,H*.4);ctx.lineTo(W*.86,H*.33);ctx.lineTo(W*.78,H*.33);ctx.closePath();if(fill){ctx.fillStyle=p.grad[1];ctx.fill();}ctx.stroke();
+    };
+    draw(base.getContext('2d'),false); draw(col.getContext('2d'),true);
+    const octx=out.getContext('2d'), tex=new T.CanvasTexture(out);
+    const screen=new T.Mesh(new T.PlaneGeometry(w-.16,h-.16),new T.MeshBasicMaterial({map:tex}));
+    screen.position.z=.096;
+    const pad=new T.Group(); pad.add(body,screen); scene.add(pad);
+    const pm=new T.MeshStandardMaterial({color:0xF4EDE4,metalness:.15,roughness:.25});
+    const pen=new T.Group(); const barrel=new T.Mesh(new T.CylinderGeometry(.055,.055,2.3,24),pm);
+    const tip=new T.Mesh(new T.ConeGeometry(.055,.2,24),pm); tip.position.y=-1.25; tip.rotation.x=Math.PI; pen.add(barrel,tip);
+    scene.add(pen);
+    scene.add(new T.AmbientLight(0xffffff,.45));
+    const k1=new T.PointLight(g1,2.1,16); k1.position.set(3,2.4,4); scene.add(k1);
+    const k2=new T.PointLight(g3,1.6,16); k2.position.set(-3.2,-1.4,3.4); scene.add(k2);
+    const d=new T.DirectionalLight(0xffffff,.35); d.position.set(0,3,5); scene.add(d);
+    let lastX=-1;
+    return {update(t,ptr){
+      const k=(t%7)/7, sweep=sm(.1,.6,k)*(1-sm(.88,1,k)), x=Math.round(sweep*W);
+      if(x!==lastX){lastX=x;octx.drawImage(base,0,0);if(x>0)octx.drawImage(col,0,0,x,H,0,0,x,H);tex.needsUpdate=true;}
+      pad.rotation.y=-.35+Math.sin(t*.4)*.06+ptr.x*.55; pad.rotation.x=.1+ptr.y*.3+Math.sin(t*.5)*.03; pad.position.y=Math.sin(t*.8)*.07;
+      pen.position.set(1.25+ptr.x*.2,-.25+Math.sin(t*.8+1)*.12,1.1); pen.rotation.set(.2,0,.55+Math.sin(t*.6)*.05);
+    }};
+  }
+};
+
+// round 3: fill embedded images and the cinema spotlight
+document.querySelectorAll('img[data-img]').forEach(im=>{const v=window.IMG&&window.IMG[im.dataset.img];if(v)im.src=v});
+(function(){const d=document.getElementById('dD');if(!d)return;
+  d.addEventListener('pointermove',e=>{const r=d.getBoundingClientRect();d.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');d.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%')});})();
+
+(function initGL(){
+  if(!window.THREE) return; // CSS gradients still render without 3D
+  const RM=matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('canvas[data-scene]').forEach(cv=>{
+    let renderer;
+    try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true})}catch(_){return}
+    renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));
+    const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(35,1,.1,100);
+    const p=P.find(x=>x.scene===cv.dataset.scene), s=SCENES[p.scene](scene,cam,p);
+    const host=cv.closest('.mock'), ptr={x:0,y:0,tx:0,ty:0};
+    host.addEventListener('pointermove',e=>{const r=host.getBoundingClientRect();ptr.tx=(e.clientX-r.left)/r.width-.5;ptr.ty=(e.clientY-r.top)/r.height-.5});
+    host.addEventListener('pointerleave',()=>{ptr.tx=0;ptr.ty=0});
+    let vis=false, raf=null; const t0=performance.now();
+    const frame=now=>{ptr.x+=(ptr.tx-ptr.x)*.06;ptr.y+=(ptr.ty-ptr.y)*.06;s.update(RM.matches?4:(now-t0)/1000,ptr);renderer.render(scene,cam)};
+    const loop=now=>{raf=null;frame(now);if(vis&&!RM.matches)raf=requestAnimationFrame(loop)};
+    const kick=()=>{if(raf===null)raf=requestAnimationFrame(loop)};
+    new ResizeObserver(()=>{const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();frame(performance.now())}).observe(cv);
+    new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis)kick()}).observe(cv);
+    host.addEventListener('pointermove',kick);
+    RM.addEventListener('change',kick);
+  });
+})();
+</script>
+
+</html>
