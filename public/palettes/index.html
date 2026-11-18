@@ -91,7 +91,7 @@ p{margin:0}
 .m-btn--lg{min-height:48px;padding:0 24px;font-size:15px}
 .m-ghost{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--m-line);color:var(--m-text);font:700 15px/1 var(--f-body)}
 .m-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:24px;padding:26px 22px 28px;align-items:center}
-.m-kicker{display:inline-flex;align-items:center;gap:10px;font:500 11px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--m-second)}
+.m-kicker{display:inline-flex;align-items:center;gap:10px;font:500 11px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--m-kick)}
 .m-kicker::before{content:"";width:22px;height:1px;background:currentColor}
 .m-h1{margin:14px 0 14px;display:grid;gap:2px}
 .m-h1 small{font:500 clamp(15px,1.5vw,19px)/1.2 var(--f-body);color:var(--m-body)}
@@ -291,7 +291,7 @@ const P = [
   {
     id:'plastermarker', n:'11', round:2, name:'Штукатурка і маркер', short:'Штукатурка', pick:'Мока + жовтий', mark:true,
     mood:'Світла тепла штукатурка з Моки, графітовий текст і жовтий маркер, яким підкреслюють головне, як у скетчбуку. Поєднує теплоту Моки і впізнаваний жовтий Графіту.',
-    c:{bg:'#EFE9E2',surface:'#F9F6F2',line:'#DDD3C8',text:'#1F1B18',body:'#57504A',accent:'#1F1B18',on:'#F9F6F2',second:'#FFCF3F',on2:'#1F1B18',hl:'#1F1B18',price:'#1F1B18',logo2:'#E0A800',persp:'#B88F76'},
+    c:{bg:'#EFE9E2',surface:'#F9F6F2',line:'#DDD3C8',text:'#1F1B18',body:'#57504A',accent:'#1F1B18',on:'#F9F6F2',second:'#FFCF3F',on2:'#1F1B18',hl:'#1F1B18',price:'#1F1B18',logo2:'#E0A800',persp:'#B88F76',kick:'#8A6450'},
     names:{bg:'Штукатурка',surface:'Аркуш',line:'Шов',text:'Графіт',accent:'Кнопка',second:'Маркер'},
     why:['Жовтий зберігається як фірмовий знак, але в ролі виділення','Світла і дружня для новачків, тепла для дизайнерок','Прийом «підкреслення маркером» прямо з практики скетчингу'],
     care:['Логотип потребує темної версії з жовтим акцентом','Жовтий не можна ставити текстом на світлий фон, тільки підкладкою']
@@ -357,7 +357,7 @@ function sketch(c){
 
 function mock(p){
   const c=p.c, is3d=!!p.scene;
-  const v={bg:c.bg,surface:c.surface,line:c.line,text:c.text,body:c.body,accent:c.accent,on:c.on,second:c.second,on2:c.on2,hl:c.hl,price:c.price,'logo2':c.logo2};
+  const v={bg:c.bg,surface:c.surface,line:c.line,text:c.text,body:c.body,accent:c.accent,on:c.on,second:c.second,on2:c.on2,hl:c.hl,price:c.price,'logo2':c.logo2,kick:c.kick||c.second};
   if(p.grad){[v.g1,v.g2,v.g3]=p.grad;[v.t1,v.t2,v.t3]=p.tgrad;}
   const vars=Object.entries(v).map(([k,x])=>`--m-${k}:${x}`).join(';');
   const bg = is3d ? `<div class="m-aura" aria-hidden="true"></div>` : `<svg class="persp" viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${room(800,520,300,150,c.persp,true)}</svg>`;
