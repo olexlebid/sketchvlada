@@ -41,7 +41,9 @@ p{margin:0}
 .brief dd{margin:0;font-weight:600}
 
 /* ---------- overview strip ---------- */
-.strip{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:12px}
+.strip{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+.strip a.chosen{border-color:var(--ink)}
+.m-h1 em.mark{color:var(--m-text);background:linear-gradient(transparent 58%,var(--m-second) 58% 90%,transparent 90%);padding-inline:.06em}
 .strip a{display:grid;gap:10px;text-decoration:none;color:inherit;padding:10px;border-radius:14px;border:1px solid var(--rule);background:var(--card);transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s}
 .strip a:hover{transform:translateY(-3px);border-color:var(--muted)}
 .strip .bars{display:flex;height:84px;border-radius:9px;overflow:hidden}
@@ -144,7 +146,8 @@ p{margin:0}
   .board__body{grid-template-columns:1fr}
   .strip{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-@media (min-width:981px) and (max-width:1200px){.strip{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media (min-width:981px) and (max-width:1200px){.strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (min-width:721px) and (max-width:980px){.strip{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-width:720px){
   .intro{grid-template-columns:1fr}
   .m-hero{grid-template-columns:1fr}
@@ -161,10 +164,10 @@ p{margin:0}
   <header class="intro">
     <div>
       <p class="eyebrow">Sketch Vlada School · нова кольорова гамма</p>
-      <h1>Вісім напрямків для оновлення сайту</h1>
+      <h1>Раунд 2: між Графітом і Мокою</h1>
     </div>
     <div style="display:grid;gap:16px">
-      <p class="lede">Кожна палітра показана на живому макеті першого екрана сайту, з тими самими шрифтами. Натисніть на колір, щоб скопіювати HEX. Контраст тексту перевіряється автоматично за WCAG.</p>
+      <p class="lede">У першому раунді Влада відмітила Графіт (№ 1) і Моку (№ 3). Нижче шість нових варіантів у цьому напрямку, від темних до світлих, а під ними весь перший раунд. Кожна палітра показана на живому макеті першого екрана сайту, з тими самими шрифтами. Натисніть на колір, щоб скопіювати HEX. Контраст тексту перевіряється автоматично за WCAG.</p>
       <div class="brief">
         <dl>
           <dt>Аудиторія</dt><dd>жінки 25–45, новачки й дизайнерки інтер'єру</dd>
@@ -180,7 +183,8 @@ p{margin:0}
   <div id="boards" style="display:grid;gap:72px"></div>
 
   <footer class="foot">
-    <p><b>Як обрати.</b> Перші дві палітри найменше змінюють впізнаваність: жовтий логотип працює без переробки. Третя і четверта зміщують бренд у бік інтер'єрного дизайну й потребують темної версії логотипа. П'ята найсміливіша, її варто брати, якщо школа хоче звучати молодше. Шоста, сьома і восьма додають градієнти та 3D: вони виглядають найдорожче, але потребують більше роботи і запасного варіанта для слабких телефонів.</p>
+    <p><b>Раунд 2.</b> № 9 і № 14 найближчі до Графіту, № 10 і № 12 тримають темний фон, але теплішають, № 11 і № 13 світлі, як Мока. Якщо подобається щось частково (наприклад, фон з одного варіанта, а кнопки з іншого), так і напишіть.</p>
+    <p><b>Раунд 1.</b> Перші дві палітри найменше змінюють впізнаваність: жовтий логотип працює без переробки. Третя і четверта зміщують бренд у бік інтер'єрного дизайну й потребують темної версії логотипа. П'ята найсміливіша, її варто брати, якщо школа хоче звучати молодше. Шоста, сьома і восьма додають градієнти та 3D: вони виглядають найдорожче, але потребують більше роботи і запасного варіанта для слабких телефонів.</p>
     <p>Скажіть номер або назву, і я перенесу палітру в <code>tokens.css</code> сайту.</p>
   </footer>
 </main>
@@ -266,6 +270,56 @@ const P = [
     show:['bg','surface','text','accent','second','grad'],
     why:['iPad і стилус одразу пояснюють, чого тут навчають','Тепле світло, як на рендерах інтер’єрів, і пасує до фото Влади','Жовтий логотип природно вписується в медовий акцент'],
     care:['3D-модель iPad варто замовити або купити якіснішу, ніж у макеті','Three.js потребує запасного статичного варіанта для мобільних']
+  },
+  // ---- Round 2: variations between Graphite (1) and Mocha (3) ----
+  {
+    id:'warmgraphite', n:'9', round:2, name:'Теплий графіт', short:'Теплий графіт', pick:'Графіт + мока',
+    mood:'Графіт, але тепліший, з коричневим підтоном, як мокрий вугільний олівець. Жовтий маркер і логотип лишаються, а другим кольором стає мока замість холодного блакитного.',
+    c:{bg:'#1A1816',surface:'#25221F',line:'#3B3631',text:'#F5F0E9',body:'#C9C0B6',accent:'#FFCF3F',on:'#1A1816',second:'#B88F76',on2:'#1A1816',hl:'#FFCF3F',price:'#FFCF3F',logo2:'#FFCF3F',persp:'#B88F76'},
+    names:{bg:'Вугілля',surface:'Панель',line:'Лінія',text:'Вершки',accent:'Маркер',second:'Мока'},
+    why:['Найменше змін від Графіту, але атмосфера стає затишною, «інтер’єрною»','Жовтий логотип працює без переробки','Мока в тегах і лініях м’яко з’єднує дві обрані палітри'],
+    care:['Жовтий і мока разом треба дозувати: жовтий тільки для дій']
+  },
+  {
+    id:'espresso', n:'10', round:2, name:'Еспресо і латте', short:'Еспресо', pick:'Темна мока',
+    mood:'Мока в темній версії: глибокий кавовий фон, вершковий текст, кнопки кольору латте і шавлія для дрібних акцентів. Як вечірнє світло в гарному ресторані.',
+    c:{bg:'#1E1714',surface:'#2A201C',line:'#45362F',text:'#F4EBE2',body:'#CDBFB3',accent:'#DDAA88',on:'#1E1714',second:'#A3B79B',on2:'#1E1714',hl:'#DDAA88',price:'#DDAA88',logo2:'#DDAA88',persp:'#DDAA88'},
+    names:{bg:'Еспресо',surface:'Кава',line:'Шов',text:'Вершки',accent:'Латте',second:'Шавлія'},
+    why:['Тепла палітра Моки, але темна основа Графіту','Виглядає дорого і спокійно, без яскравих кольорів','Теплі рендери студентів на такому фоні світяться'],
+    care:['Логотип краще перефарбувати в латте або вершковий','Потрібно стежити, щоб сайт не став надто «коричневим»: більше повітря і світлих фото']
+  },
+  {
+    id:'plastermarker', n:'11', round:2, name:'Штукатурка і маркер', short:'Штукатурка', pick:'Мока + жовтий', mark:true,
+    mood:'Світла тепла штукатурка з Моки, графітовий текст і жовтий маркер, яким підкреслюють головне, як у скетчбуку. Поєднує теплоту Моки і впізнаваний жовтий Графіту.',
+    c:{bg:'#EFE9E2',surface:'#F9F6F2',line:'#DDD3C8',text:'#1F1B18',body:'#57504A',accent:'#1F1B18',on:'#F9F6F2',second:'#FFCF3F',on2:'#1F1B18',hl:'#1F1B18',price:'#1F1B18',logo2:'#E0A800',persp:'#B88F76'},
+    names:{bg:'Штукатурка',surface:'Аркуш',line:'Шов',text:'Графіт',accent:'Кнопка',second:'Маркер'},
+    why:['Жовтий зберігається як фірмовий знак, але в ролі виділення','Світла і дружня для новачків, тепла для дизайнерок','Прийом «підкреслення маркером» прямо з практики скетчингу'],
+    care:['Логотип потребує темної версії з жовтим акцентом','Жовтий не можна ставити текстом на світлий фон, тільки підкладкою']
+  },
+  {
+    id:'sage', n:'12', round:2, name:'Графіт і шавлія', short:'Шавлія', pick:'Спокійна',
+    mood:'Графіт із ледь зеленим підтоном, світло-шавлієві кнопки і теплий латте. Зелень, як живі рослини в інтер’єрі: свіжо, натурально, без кричущих кольорів.',
+    c:{bg:'#171A19',surface:'#212524',line:'#363C3A',text:'#EEF0EA',body:'#BFC5BE',accent:'#B9CDA8',on:'#171A19',second:'#E3B98F',on2:'#171A19',hl:'#B9CDA8',price:'#E3B98F',logo2:'#B9CDA8',persp:'#B9CDA8'},
+    names:{bg:'Графіт',surface:'Панель',line:'Лінія',text:'Папір',accent:'Шавлія',second:'Латте'},
+    why:['Темна основа Графіту і натуральні кольори Моки','Шавлія асоціюється зі спокоєм і «зеленим» інтер’єром','Відрізняється від інших шкіл, де переважають жовті та рожеві'],
+    care:['Жовтий логотип тут зайвий, краще світлий або шавлієвий']
+  },
+  {
+    id:'travertine', n:'13', round:2, name:'Травертин і олива', short:'Травертин', pick:'Світла преміальна',
+    mood:'Світлий камінь травертин, майже чорний текст, оливкова зелень і глибокий горіховий акцент. Холодніша і контрастніша за Моку, як мармур і дерево в дорогому проєкті.',
+    c:{bg:'#E9E4DB',surface:'#F5F2EC',line:'#D3CBBE',text:'#2A2622',body:'#5C554D',accent:'#2A2622',on:'#F5F2EC',second:'#8C9A7B',on2:'#FFFFFF',hl:'#8A5E46',price:'#8A5E46',logo2:'#8A5E46',persp:'#8A5E46'},
+    names:{bg:'Травертин',surface:'Камінь',line:'Шов',text:'Вугілля',accent:'Кнопка',second:'Олива',hl:'Горіх'},
+    show:['bg','surface','line','text','hl','second'],
+    why:['Найбільш «дизайнерська» з світлих: чисто, дорого, контрастно','Горіховий акцент читається краще за моку','Фото Влади на світлому камені виглядає як у журналі'],
+    care:['Потрібна темна версія логотипа','Мало яскравості: кольорові акції краще подавати фотографіями робіт']
+  },
+  {
+    id:'mochagraphite', n:'14', round:2, name:'Мока на графіті', short:'Мока на графіті', pick:'Обидва в одному',
+    mood:'Холодний графіт Графіту як основа і тепла мока як головний колір кнопок і виділень, плюс вершковий для дрібниць. Найпряміше поєднання двох обраних палітр.',
+    c:{bg:'#161718',surface:'#202224',line:'#36393D',text:'#F2EEE9',body:'#C4C2BF',accent:'#C99D82',on:'#161718',second:'#EADBC9',on2:'#161718',hl:'#C99D82',price:'#C99D82',logo2:'#C99D82',persp:'#C99D82'},
+    names:{bg:'Графіт',surface:'Панель',line:'Лінія',text:'Папір',accent:'Мока',second:'Вершки'},
+    why:['Буквально Графіт і Мока разом','Мока на холодному фоні виглядає дорожче, ніж на теплому','Стримано і елегантно, підходить для дорогих PRO-курсів'],
+    care:['Логотип перефарбовується в моку або білий','Менше енергії, ніж з жовтим: акції варто виділяти іншими прийомами']
   }
 ];
 
@@ -316,7 +370,7 @@ function mock(p){
     <div class="m-hero">
       <div>
         <span class="m-kicker">Владислава Бондаренко</span>
-        <div class="m-h1"><small>Онлайн-школа</small><b>скетчингу</b><b>і <em${p.grad?' class="grad"':''}>моделювання</em></b><b>інтер'єрів</b></div>
+        <div class="m-h1"><small>Онлайн-школа</small><b>скетчингу</b><b>і <em${p.grad?' class="grad"':p.mark?' class="mark"':''}>моделювання</em></b><b>інтер'єрів</b></div>
         <p class="m-lede">Навчу малювати інтер'єри на iPad, навіть якщо ви ніколи не малювали.</p>
         <div class="m-cta"><span class="m-btn m-btn--lg">Обрати курс →</span><span class="m-ghost">Відео про школу</span></div>
       </div>
@@ -352,19 +406,28 @@ function board(p){
 }
 
 // overview strip
-document.getElementById('strip').innerHTML = P.map(p=>{
+// overview: the two palettes Vlada picked in round 1, then round 2
+const chosenIds=['graphite','mocha'];
+const stripItems=[...chosenIds.map(id=>P.find(p=>p.id===id)), ...P.filter(p=>p.round===2)];
+document.getElementById('strip').innerHTML = stripItems.map(p=>{
+  const chosen=chosenIds.includes(p.id);
   const k=['bg','surface','text','accent','second'];
   const wts=[34,16,14,22,14];
   const bars = p.grad
     ? `<i style="flex:40;background:${p.c.bg}"></i><i style="flex:60;background:linear-gradient(160deg,${p.grad.join(',')})"></i>`
     : k.map((x,i)=>`<i style="flex:${wts[i]};background:${p.c[x==='accent'&&p.id==='mocha'?'hl':x]}"></i>`).join('');
-  return `<a href="#p-${p.id}" class="${p.current?'cur':''}"><span class="bars">${bars}</span><span>${p.current?'Зараз':'№ '+p.n}</span><b>${p.short}</b></a>`;
+  return `<a href="#p-${p.id}" class="${chosen?'chosen':''}"><span class="bars">${bars}</span><span>${chosen?'Обрано · № '+p.n:'№ '+p.n}</span><b>${p.short}</b></a>`;
 }).join('');
 // boards: flat palettes, then the gradient + 3D group, current last as the reference
 const groupHead = `<div class="group"><p class="eyebrow">Палітри 6–8</p><h2>Градієнти і живе 3D</h2>
   <p>Тут перший екран не просто кольоровий: м’які переливи на фоні, скляні картки і 3D-сцена на Three.js, яка реагує на курсор. Сцени показують те, про що школа: кімнату в перспективі, фарбу і iPad. Поводіть мишкою над макетами.</p></div>`;
+const round2Head = `<div class="group"><p class="eyebrow">Раунд 2 · палітри 9–14</p><h2>Варіації між Графітом і Мокою</h2>
+  <p>Спершу ті, що ближчі до темного Графіту, потім світлі, ближчі до Моки. Номери продовжують перший раунд, щоб було легко відповідати.</p></div>`;
+const round1Head = `<div class="group"><p class="eyebrow">Раунд 1 · палітри 1–8</p><h2>Перший раунд</h2>
+  <p>Для порівняння: усі варіанти, які Влада вже бачила. Графіт (№ 1) і Мока (№ 3) тут теж є.</p></div>`;
 document.getElementById('boards').innerHTML =
-  P.filter(p=>!p.current&&!p.scene).map(board).join('') + groupHead +
+  round2Head + P.filter(p=>p.round===2).map(board).join('') + round1Head +
+  P.filter(p=>!p.current&&!p.scene&&!p.round).map(board).join('') + groupHead +
   P.filter(p=>p.scene).map(board).join('') + board(P[0]);
 
 // copy HEX on click (falls back to selecting the code text)
